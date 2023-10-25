@@ -1,4 +1,20 @@
 {
+  "api": {
+    "pythonapi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "athleatapi"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "auth": {
     "ATHLEAT": {
       "customAuth": false,
@@ -32,6 +48,52 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    }
+  },
+  "function": {
+    "AuthenticateStrava": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "athleatapi": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_AuthenticateStrava_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AuthenticateStrava"
+        }
+      ]
+    },
+    "AMPLIFY_function_AuthenticateStrava_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AuthenticateStrava"
+        }
+      ]
+    },
+    "AMPLIFY_function_athleatapi_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "athleatapi"
+        }
+      ]
+    },
+    "AMPLIFY_function_athleatapi_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "athleatapi"
+        }
+      ]
     }
   }
 }

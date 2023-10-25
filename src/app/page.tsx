@@ -1,6 +1,8 @@
 import { Knewave } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
+import awsExports from "@/aws-exports";
+import { Amplify } from "aws-amplify";
+Amplify.configure({ ...awsExports, ssr: true });
 
 const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 
@@ -10,7 +12,7 @@ export default function Home() {
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono lg:flex" />
 
       <div className={knewave.className}>
-        <h1 className={"text-9xl"}>ATHLEAT</h1>
+        <h1 className="text-9xl">ATHLEAT</h1>
         <h3 className="text-center text-4xl py-6">Eat. Move. Feel.</h3>
       </div>
 

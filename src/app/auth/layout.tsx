@@ -1,6 +1,5 @@
 // components/Layout.tsx
 import React from "react";
-import Link from "next/link";
 import Head from "next/head";
 
 type Props = {
@@ -19,8 +18,7 @@ const Layout: React.FC<Props> = ({
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-
-      <body>{children}</body>
+      {children}
     </div>
   );
 };
