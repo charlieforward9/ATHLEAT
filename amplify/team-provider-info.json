@@ -14,6 +14,16 @@
     "categories": {
       "auth": {
         "ATHLEAT": {}
+      },
+      "function": {
+        "athleatapi": {
+          "deploymentBucketName": "amplify-athleat-dev-111250-deployment",
+          "s3Key": "amplify-builds/athleatapi-64363858556e34326565-build.zip"
+        },
+        "AuthenticateStrava": {
+          "deploymentBucketName": "amplify-athleat-dev-111250-deployment",
+          "s3Key": "amplify-builds/AuthenticateStrava-636f33655231417a7542-build.zip"
+        }
       }
     }
   }

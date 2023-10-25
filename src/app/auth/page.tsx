@@ -1,7 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { signIn, signUp, confirmSignUp } from "aws-amplify/auth";
+import { Amplify, Auth } from "aws-amplify";
+import awsExports from "@/aws-exports";
+Amplify.configure({ ...awsExports, ssr: true });
 
 const AuthPage = () => {
   // State hooks for login, registration, and confirmation
@@ -9,7 +11,7 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
-  const [user, setUser] = useState(null); // To hold user data after sign-up
+  const [user, setUser] = useState<boolean>(false); // To hold user data after sign-up
   const [errorMessage, setErrorMessage] = useState("");
 
   // Handler for the form submission event
@@ -20,24 +22,36 @@ const AuthPage = () => {
     try {
       if (isLogin) {
         // Sign in the user
-        await signIn({ username: email, password });
+        const result = await Auth.signIn({ username: email, password });
+        // if (success)=> goTo("/home");
+        // else => setErrorMessage("Incorrect username or password");
         // TODO: handle redirection or state updates as necessary
       } else {
         if (!user) {
           // Sign up the user
-          const newUser = await signUp({
+          const newUser = await Auth.signUp({
             username: email,
             password,
+            attributes: {
+              email,
+              preferred_username: email,
+              gender: "Male",
+              name: "Athleat User",
+            },
           });
+          setUser(true);
           //TODO: setUser(newUser); // Save the user to state
           // After this point, you would probably want to instruct the user to check their email for the confirmation code.
         } else {
-          // Confirm the code provided by the user
-          await confirmSignUp({ username: email, confirmationCode });
+          //TODO: Send the Strava token to the backend
+          //Backend: use the token to get the user's data from Strava
+          //Backend: save the token for future use
+          //const token = Token;
+          // if (success)=> goTo("/home");
+
           // Here, you could redirect to the login page or automatically log the user in.
           // We'll clear the form and redirect to login for simplicity.
           setIsLogin(true);
-          setUser(null);
           setPassword("");
           setConfirmationCode("");
         }
@@ -47,6 +61,7 @@ const AuthPage = () => {
         setErrorMessage(
           error.message || "An error occurred during authentication"
         );
+        setUser(false);
       } else {
         console.log("Unrecognized Error: ", error);
       }
@@ -56,9 +71,10 @@ const AuthPage = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-200 text-black">
       <div className="p-10 bg-white rounded-lg shadow-md w-full max-w-md">
         {user ? (
+          //Strava integration view
           <div>
             <h1 className="text-2xl font-bold mb-6 text-center">
-              Confirm Sign Up
+              Integrate with Strava
             </h1>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
