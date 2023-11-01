@@ -1,5 +1,7 @@
 "use client";
 
+import Spinner from '../components/Spinner';
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Amplify, Auth } from "aws-amplify";
 import awsExports from "@/aws-exports";
@@ -13,17 +15,25 @@ const AuthPage = () => {
   const [confirmationCode, setConfirmationCode] = useState("");
   const [user, setUser] = useState<boolean>(false); // To hold user data after sign-up
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   // Handler for the form submission event
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(""); // Clear any previous errors
 
+
     try {
+      //setErrorMessage("");
       if (isLogin) {
         // Sign in the user
         const result = await Auth.signIn({ username: email, password });
-        // if (success)=> goTo("/home");
+        // if (result) {
+
+        setLoading(true);
+        router.push("/home");
+        //setLoading(false);
         // else => setErrorMessage("Incorrect username or password");
         // TODO: handle redirection or state updates as necessary
       } else {
@@ -39,6 +49,7 @@ const AuthPage = () => {
               name: "Athleat User",
             },
           });
+          
           setUser(true);
           //TODO: setUser(newUser); // Save the user to state
           // After this point, you would probably want to instruct the user to check their email for the confirmation code.
@@ -69,6 +80,7 @@ const AuthPage = () => {
   };
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-200 text-black">
+      {loading ? <Spinner /> : null}
       <div className="p-10 bg-white rounded-lg shadow-md w-full max-w-md">
         {user ? (
           //Strava integration view
@@ -78,21 +90,14 @@ const AuthPage = () => {
             </h1>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
-              <label className="block mb-4">
-                <span className="text-gray-700">Confirmation Code:</span>
-                <input
-                  className="mt-1 p-2 w-full border rounded-md"
-                  value={confirmationCode}
-                  onChange={(e) => setConfirmationCode(e.target.value)}
-                  required
-                />
-              </label>
+              
               <div className="flex justify-center">
                 <button
                   type="submit"
                   className="w-full px-4 py-2 text-white bg-blue-500 hover:bg-blue-700 rounded-md focus:outline-none focus:ring"
+                  onClick={() => window.open("https://www.strava.com/")}
                 >
-                  Confirm
+                  Link Your Account
                 </button>
               </div>
             </form>
@@ -142,6 +147,8 @@ const AuthPage = () => {
                     setEmail("");
                     setConfirmationCode("");
                     setIsLogin(!isLogin);
+                    // also clear error messages
+                    setErrorMessage("");
                   }}
                 >
                   {isLogin
