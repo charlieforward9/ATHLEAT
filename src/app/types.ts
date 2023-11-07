@@ -1,7 +1,10 @@
 export enum DataType {
-  "Activity",
-  "Nutrient",
-  "Mood",
+  Start,
+  End,
+  Time,
+  Activity,
+  Nutrient,
+  Mood,
 }
 
 export interface AthleatEvent {
@@ -9,13 +12,13 @@ export interface AthleatEvent {
   eventJSON: MoodEventJson | NutrientEventJson | ActivityEventJson;
 }
 
-export interface MoodEventJson {
+export type MoodEventJson = {
   date: string;
   time: string;
   moodIndex: number;
-}
+};
 
-export interface NutrientEventJson {
+export type NutrientEventJson = {
   date: string;
   time: string;
   food: string;
@@ -24,9 +27,9 @@ export interface NutrientEventJson {
   carbs: number;
   fat: number;
   protein: number;
-}
+};
 
-export interface ActivityEventJson {
+export type ActivityEventJson = {
   date: string;
   time: string;
   activityType: string;
@@ -34,4 +37,4 @@ export interface ActivityEventJson {
   calories: number;
   distance: number;
   pace: number;
-}
+};

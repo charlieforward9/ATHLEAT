@@ -1,3 +1,5 @@
+import { DataType } from "../types";
+
 export enum Trend {
   "Intake",
   "Effort",
@@ -5,10 +7,12 @@ export enum Trend {
   "Timing",
 }
 
-export interface FilterMap {
+export interface Filter {
   filter: TemporalFilter | ActivityFilter | NutrientFilter | MoodFilter;
-  value: string | number;
+  value?: string | number;
 }
+
+export type FilterMap = Map<DataType, Filter>;
 
 export interface FilterOptions {
   temporalFilters?: TemporalFilter[];
@@ -18,28 +22,28 @@ export interface FilterOptions {
 }
 
 export enum TemporalFilter {
-  "StartDate",
-  "EndDate",
-  "TimeOfDay",
+  Start,
+  End,
+  Time,
 }
 
 export enum ActivityFilter {
-  "ActivityType",
-  "ActivityDuration",
-  "ActivityCalories",
-  "ActivityDistance",
-  "ActivityPace",
+  Type,
+  Duration,
+  Calories,
+  Distance,
+  Pace,
 }
 
 export enum NutrientFilter {
-  "NutrientFood",
-  "NutrientQuantity",
-  "NutrientCalories",
-  "NutrientCarbs",
-  "NutrientFat",
-  "NutrientProtein",
+  Food,
+  Quantity,
+  Calories,
+  Carbs,
+  Fat,
+  Protein,
 }
 
 export enum MoodFilter {
-  "MoodIndex",
+  Index,
 }

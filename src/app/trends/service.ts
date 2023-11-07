@@ -1,5 +1,5 @@
-import { AthleatEvent } from "../types";
-import { FilterMap, FilterOptions, Trend } from "./types";
+import { Trend } from "./types";
+import { Event } from "@/models";
 
 export abstract class TrendService {
   constructor(trend: Trend) {
@@ -7,5 +7,5 @@ export abstract class TrendService {
   }
   public trend: Trend;
 
-  abstract getData(filters: FilterMap[]): AthleatEvent[];
+  abstract getData(startDate: Date, endDate: Date): Promise<Event[]>;
 }
