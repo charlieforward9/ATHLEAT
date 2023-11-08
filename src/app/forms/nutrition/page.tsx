@@ -2,6 +2,13 @@
 
 import React, { ChangeEvent, FormEvent, useState } from "react";
 
+interface NutritionFormData {
+  date: string;
+  time: string;
+  food: string;
+  quantity: number;
+}
+
 function NutritionForm() {
   // State to keep track of the input values
   const [formData, setFormData] = useState({
