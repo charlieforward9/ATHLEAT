@@ -1,17 +1,3 @@
-export enum DataType {
-  Start,
-  End,
-  Time,
-  Activity,
-  Nutrient,
-  Mood,
-}
-
-export interface AthleatEvent {
-  type: DataType;
-  eventJSON: MoodEventJson | NutrientEventJson | ActivityEventJson;
-}
-
 export type MoodEventJson = {
   date: string;
   time: string;
