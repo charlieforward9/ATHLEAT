@@ -20,6 +20,9 @@ const FilterTab: React.FC<TrendController> = (controller) => {
     localFilters.Mood?.Index?.value
   );
 
+  //TODO: Add a useEffect to update the data when the localFilters change (if date changes we need to trigger a new DB response AND filter the data)
+  //TODO: Use controller.trend, to conditionally display the type of input we expect from the user. (click, range, etc.)
+
   return (
     <div>
       <title>Title</title>
