@@ -1,20 +1,28 @@
-import { DataType } from "../types";
-import { Filter, FilterMap, FilterOptions, Trend } from "./types";
+import { Event } from "@/models";
+import { ChartData, FilterMap, Filters, Trend } from "./types";
 
 export abstract class TrendController {
-  constructor(trend: Trend) {
+  constructor(trend: Trend, filters: Partial<FilterMap>) {
     this.trend = trend;
-    this.filters = this.getTrendFilters();
-    this.selectedFilters = this.getDefaultFilters();
+    this.filters = filters;
   }
   public trend: Trend;
-  public filters: FilterOptions;
-  public selectedFilters: FilterMap;
+  public filters: Partial<FilterMap>;
 
-  abstract getTrendFilters(): FilterOptions;
-  abstract getDefaultFilters(): FilterMap;
+  abstract filterData(data: Event[]): ChartData<Trend>;
 
-  setFilter(data: DataType, filter: Filter): void {
-    this.selectedFilters.set(data, filter);
+  toggleFilterSelection<K extends keyof FilterMap>(
+    type: K,
+    filter: Filters[K]
+  ): void {
+    if (type == "Temporal") {
+      //TODO: Trigger a call to the Database with the new start and end times
+    }
+    const existingFilter = this.filters[type]?.[filter];
+    if (existingFilter) {
+      existingFilter.selected = existingFilter.selected ? false : true;
+    } else {
+      console.log("Something went wrong");
+    }
   }
 }

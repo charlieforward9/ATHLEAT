@@ -1,6 +1,8 @@
 type Event @model @auth(rules: [{allow: public}]) {
   id: ID!
   type: String!
+  date: AWSDate!
+  time: AWSTime!
   eventJSON: AWSJSON!
 }
 

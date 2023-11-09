@@ -1,24 +1,27 @@
 import { TrendController } from "@/app/trends/controller";
 import React from "react";
-import { DataType } from "@/app/types";
 
 const FilterTab: React.FC<TrendController> = (controller) => {
-  const defaultFilters = controller.getDefaultFilters();
-  const allFilters = controller.getTrendFilters();
+  const localFilters = controller.filters;
 
   const [startDate, setStartDate] = React.useState(
-    defaultFilters.get(DataType.Start)
+    localFilters.Temporal?.Start?.value
   );
-  const [endDate, setEndDate] = React.useState(DataType.End);
+  const [endDate, setEndDate] = React.useState(
+    localFilters.Temporal?.End?.value
+  );
   const [activityFilter, setActivityFilter] = React.useState(
-    defaultFilters.get(DataType.Activity)
+    localFilters.Activity?.Calories?.value
   );
   const [nutritionFilter, setNutritionFilter] = React.useState(
-    defaultFilters.get(DataType.Nutrient)
+    localFilters.Nutrient?.Calories?.value
   );
   const [moodFilter, setMoodFilter] = React.useState(
-    defaultFilters.get(DataType.Mood)
+    localFilters.Mood?.Index?.value
   );
+
+  //TODO: Add a useEffect to update the data when the localFilters change (if date changes we need to trigger a new DB response AND filter the data)
+  //TODO: Use controller.trend, to conditionally display the type of input we expect from the user. (click, range, etc.)
 
   return (
     <div>
@@ -27,24 +30,24 @@ const FilterTab: React.FC<TrendController> = (controller) => {
         <input>Start Date</input>
         <input>End Date</input>
       </section>
-      {allFilters.activityFilters && (
+      {localFilters.Activity && (
         <section>
-          {allFilters.activityFilters.map((filter) => {
-            return <button key={filter}>{filter}</button>;
+          {Object.entries(localFilters.Activity).map(([name, details]) => {
+            return <button key={"activity" + name}>{details.selected}</button>;
           })}
         </section>
       )}
-      {allFilters.nutrientFilters && (
+      {localFilters.Nutrient && (
         <section>
-          {allFilters.nutrientFilters.map((filter) => {
-            return <button key={filter}>{filter}</button>;
+          {Object.entries(localFilters.Nutrient).map(([name, details]) => {
+            return <button key={"nutrient" + name}>{details.selected}</button>;
           })}
         </section>
       )}
-      {allFilters.moodFilters && (
+      {localFilters.Mood && (
         <section>
-          {allFilters.moodFilters.map((filter) => {
-            return <button key={filter}>{filter}</button>;
+          {Object.entries(localFilters.Mood).map(([name, details]) => {
+            return <button key={"mood" + name}>{details.selected}</button>;
           })}
         </section>
       )}
