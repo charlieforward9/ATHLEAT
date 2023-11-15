@@ -1,16 +1,19 @@
-type Event @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  type: String!
-  date: AWSDate!
-  time: AWSTime!
-  eventJSON: AWSJSON!
-}
-
-type User @model @auth(rules: [{allow: public}]) {
+type User @model @auth(rules: [{allow: public}, {allow: owner}]) {
   id: ID!
   name: String!
   email: AWSEmail!
-  stravaToken: String
+  stravaAccessToken: String
+  stravaRefreshToken: String
   dateLastUpdated: AWSDateTime
+  Events: [Event] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type Event @model @auth(rules: [{allow: public}, {allow: owner}]) {
+  id: ID!
+  type: String!
+  eventJSON: AWSJSON!
+  date: AWSDate!
+  time: AWSTime!
+  userID: ID! @index(name: "byUser")
 }
  

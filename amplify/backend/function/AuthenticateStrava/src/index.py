@@ -1,12 +1,15 @@
 import json
 import traceback
-
+import os
 import boto3
-from botocore.exceptions import ClientError
+import urllib3
 from datetime import datetime
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('User-pzdnhl4hjveflkg4qgshasqyei-dev')  # Replace with your table name
+table = dynamodb.Table('User-w54fbbt3v5gofg54w7frjfll6i-dev')  # Replace with your table name
+
+client_id = os.environ['STRAVA_CLIENT_ID']
+client_secret = os.environ['STRAVA_CLIENT_SECRET']
 
 def handler(event, context):
     try:
@@ -18,10 +21,15 @@ def handler(event, context):
             # Extracting item details from the body
         name = body['name']
         email = body['email']
-        stravaToken = body['stravaToken']
+        stravaCode = body['stravaCode']
+
+        # Exchange Strava code for an access token and a refresh token
+        strava_response = exchange_strava_token(stravaCode)
+        access_token = strava_response['access_token']
+        refresh_token = strava_response['refresh_token']
 
         # Generating a unique ID for the item
-        item_id = str(0)
+        item_id = str(strava_response['athlete']['id'])
         date_last_updated = datetime.utcnow().isoformat()
 
         # Putting the item into the DynamoDB table
@@ -30,7 +38,8 @@ def handler(event, context):
                 'id': item_id,
                 'name': name,
                 'email': email,
-                'stravaToken': stravaToken,
+                'stravaAccessToken': access_token,
+                'stravaRefreshToken': refresh_token,
                 'dateLastUpdated': date_last_updated
             }
         )
@@ -46,38 +55,30 @@ def handler(event, context):
             'body': json.dumps('Error adding item to the database')
         }
 
-
-def generate_unique_id():
-    # Placeholder for unique ID generation logic
-    # You could use UUID or another method to generate unique IDs
-    return 'unique-id-placeholder'
-"""
-def handler(event, context):
-    #Receive token from user
-    print('received event:')
-    print(event)
-    body = {}
-    #token = json.loads(event['body'])['token']
-    body['token'] = event
-    body['wepassinginfo'] = "look at this succcessful output! dope!"
-    
-    PROPER FORMAT FOR LAMBDA OUTPUT:
-    {
-        "isBase64Encoded": true | false,
-        "statusCode": httpStatusCode,
-        "headers": {"headerName": "headerValue", ...},
-        "multiValueHeaders": {"headerName": ["headerValue", "headerValue2", ...], ...},
-        "body": "..."
-    }
-    
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Access-Control-Allow-Headers': '*',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
-        'body': json.dumps(body)  # Convert the body object to a JSON string
+def exchange_strava_token(stravaCode):
+    url = 'https://www.strava.com/oauth/token'
+    payload = {
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'code': stravaCode,
+        'grant_type': 'authorization_code'
     }
 
-"""
+    # Encode the payload to JSON and prepare the headers
+    encoded_payload = json.dumps(payload).encode('utf-8')
+    headers = {'Content-Type': 'application/json'}
+
+    # Create a PoolManager instance
+    http = urllib3.PoolManager()
+
+    # Make the request
+    response = http.request('POST', url, body=encoded_payload, headers=headers)
+
+    # Check for HTTP errors
+    if response.status != 200:
+        raise urllib3.exceptions.HTTPError(response.status)
+
+    # Return the JSON response
+    return json.loads(response.data.decode('utf-8'))
+
+

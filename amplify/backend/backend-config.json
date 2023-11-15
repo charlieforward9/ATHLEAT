@@ -1,12 +1,26 @@
 {
   "api": {
     "ATHLEAT": {
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "ATHLEAT"
+        }
+      ],
       "output": {
         "authConfig": {
           "additionalAuthenticationProviders": [
             {
               "authenticationType": "AWS_IAM"
+            },
+            {
+              "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+              "userPoolConfig": {
+                "userPoolId": "authATHLEAT"
+              }
             }
           ],
           "defaultAuthentication": {
@@ -29,7 +43,7 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "athleatapi"
+          "resourceName": "AuthenticateStrava"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -43,7 +57,7 @@
       "frontendAuthConfig": {
         "mfaConfiguration": "OFF",
         "mfaTypes": [
-          "TOTP"
+          "SMS"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyCharacters": [
@@ -72,18 +86,34 @@
     }
   },
   "function": {
-    "AuthenticateStrava": {
+    "AddActivities": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "athleatapi": {
+    "AuthenticateStrava": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
   "parameters": {
+    "AMPLIFY_function_AddActivities_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AddActivities"
+        }
+      ]
+    },
+    "AMPLIFY_function_AddActivities_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AddActivities"
+        }
+      ]
+    },
     "AMPLIFY_function_AuthenticateStrava_deploymentBucketName": {
       "usedBy": [
         {

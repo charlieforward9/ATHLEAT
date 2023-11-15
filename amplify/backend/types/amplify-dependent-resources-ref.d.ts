@@ -23,14 +23,14 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
-    "AuthenticateStrava": {
+    "AddActivities": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
       "Region": "string"
     },
-    "athleatapi": {
+    "AuthenticateStrava": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
