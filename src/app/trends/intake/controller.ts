@@ -57,6 +57,7 @@ export class IntakeController extends TrendController {
           selected: false,
         },
       },
+      Mood: {},
     });
   }
 

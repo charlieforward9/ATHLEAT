@@ -2,12 +2,12 @@ import { Event } from "@/models";
 import { ChartData, FilterMap, Filters, Trend } from "./types";
 
 export abstract class TrendController {
-  constructor(trend: Trend, filters: Partial<FilterMap>) {
+  constructor(trend: Trend, filters: FilterMap) {
     this.trend = trend;
     this.filters = filters;
   }
   public trend: Trend;
-  public filters: Partial<FilterMap>;
+  public filters: FilterMap;
 
   abstract filterData(data: Event[]): ChartData<Trend>;
 
@@ -18,9 +18,10 @@ export abstract class TrendController {
     if (type == "Temporal") {
       //TODO: Trigger a call to the Database with the new start and end times
     }
-    const existingFilter = this.filters[type]?.[filter];
+    const existingFilter = this.filters[type][filter];
     if (existingFilter) {
       existingFilter.selected = existingFilter.selected ? false : true;
+      this.filters[type][filter] = existingFilter;
     } else {
       console.log("Something went wrong");
     }

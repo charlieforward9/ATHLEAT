@@ -37,7 +37,7 @@ export enum MoodFilter {
 export interface Filter<F> {
   filter: F;
   value?: string | number;
-  selected?: boolean;
+  selected: boolean;
 }
 
 export type Filters = {
