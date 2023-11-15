@@ -5,6 +5,27 @@ export enum Trend {
   Timing = "Timing",
 }
 
+// ********** Dataset Types ********** //
+export type IntakeData = {
+  activity: Partial<ActivityData>;
+  nutrient: Partial<NutrientData>;
+};
+
+export type EffortData = {};
+
+export type ConsistencyData = {};
+
+export type TimingData = {};
+
+export type TrendToTrendDataMap = {
+  [Trend.Intake]: IntakeData[];
+  [Trend.Effort]: EffortData[];
+  [Trend.Consistency]: ConsistencyData[];
+  [Trend.Timing]: TimingData[];
+
+  // ... other trend to data mappings
+};
+
 // ********** Filter Types ********** //
 
 export enum TemporalFilter {
@@ -55,14 +76,35 @@ export type FilterMap = {
 
 // ********** Chart Types ********** //
 
-export interface ChartData<T> {
+export type TemporalData = {
+  start: Date;
+  end: Date;
+  time: Date;
+};
+
+export type ActivityData = {
+  type: string;
+  duration: number;
+  calories: number;
+  distance: number;
+  pace: number;
+};
+
+export type NutrientData = {
+  food: string;
+  quantity: number;
+  calories: number;
+  carbs: number;
+  fat: number;
+  protein: number;
+};
+
+export type MoodData = {
+  index: number;
+};
+
+export interface ChartData<T extends keyof TrendToTrendDataMap> {
   trend: T;
   labels: string[];
-  datasets: TrendData[];
+  datasets: TrendToTrendDataMap[T];
 }
-
-export type TrendData = {
-  label: string;
-  data: number[];
-  color: string;
-};

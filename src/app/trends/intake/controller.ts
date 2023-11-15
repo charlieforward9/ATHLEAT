@@ -1,9 +1,6 @@
 import { TrendController } from "../controller";
 import {
   ActivityFilter,
-  Filter,
-  Filters,
-  FilterMap,
   NutrientFilter,
   TemporalFilter,
   Trend,
@@ -65,51 +62,45 @@ export class IntakeController extends TrendController {
   filterData(data: Event[]): ChartData<Trend.Intake> {
     const chartData: ChartData<Trend.Intake> = {
       trend: Trend.Intake,
-      labels: ["Start Date", "Everything Between", "End Date"],
-      datasets: [
-        {
-          label: "To be populated below",
-          data: [0],
-          color: "#ff0000",
-        },
-      ],
+      labels: [],
+      datasets: [],
     };
-    data.forEach((event) => {
-      // TODO: Parse the eventJSON into a usable format
-      // if (event.typeOfEvent === "Activity") {
-      //        eventData = JSON.parse(event.eventJSON);
-      //     } else if (event.typeOfEvent === "Nutrient") {
-      //       eventData = JSON.parse(event.eventJSON);
-      //     }
-      for (const [dataType, filters] of Object.entries(this.filters)) {
-        if (dataType === "Activity") {
-          for (const [filter, filterData] of Object.entries(filters)) {
-            if (filter === "Calories" && filterData.selected) {
-            }
-            if (filter === "Duration" && filterData.selected) {
-            }
-            if (filter === "Distance" && filterData.selected) {
-            }
-            if (filter === "Pace" && filterData.selected) {
-            }
-          }
-        }
-        if (dataType === "Nutrient") {
-          for (const [filter, filterData] of Object.entries(filters)) {
-            if (filter === "Quantity" && filterData.selected) {
-            }
-            if (filter === "Calories" && filterData.selected) {
-            }
-            if (filter === "Carbs" && filterData.selected) {
-            }
-            if (filter === "Fat" && filterData.selected) {
-            }
-            if (filter === "Protein" && filterData.selected) {
-            }
-          }
-        }
-      }
-    });
+    // data.forEach((event) => {
+    //   // TODO: Parse the eventJSON into a usable format
+    //   // if (event.typeOfEvent === "Activity") {
+    //   //        eventData = JSON.parse(event.eventJSON);
+    //   //     } else if (event.typeOfEvent === "Nutrient") {
+    //   //       eventData = JSON.parse(event.eventJSON);
+    //   //     }
+    //   for (const [dataType, filters] of Object.entries(this.filters)) {
+    //     if (dataType === "Activity") {
+    //       for (const [filter, filterData] of Object.entries(filters)) {
+    //         if (filter === "Calories" && filterData.selected) {
+    //         }
+    //         if (filter === "Duration" && filterData.selected) {
+    //         }
+    //         if (filter === "Distance" && filterData.selected) {
+    //         }
+    //         if (filter === "Pace" && filterData.selected) {
+    //         }
+    //       }
+    //     }
+    //     if (dataType === "Nutrient") {
+    //       for (const [filter, filterData] of Object.entries(filters)) {
+    //         if (filter === "Quantity" && filterData.selected) {
+    //         }
+    //         if (filter === "Calories" && filterData.selected) {
+    //         }
+    //         if (filter === "Carbs" && filterData.selected) {
+    //         }
+    //         if (filter === "Fat" && filterData.selected) {
+    //         }
+    //         if (filter === "Protein" && filterData.selected) {
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
 
     return chartData;
   }
