@@ -8,5 +8,5 @@ export abstract class TrendService {
   public trend: Trend;
 
   abstract getData(startDate: Date, endDate: Date): Promise<Event[]>;
-  abstract transformData(events: Event[]): ChartData<Trend>[];
+  abstract transformData(events: Event[]): ChartData<Trend>;
 }

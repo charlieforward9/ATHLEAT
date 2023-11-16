@@ -11,11 +11,22 @@ export type IntakeData = {
   nutrient: Partial<NutrientData>;
 };
 
-export type EffortData = {};
+export type EffortData = {
+  activity: ActivityData;
+  previousDayNutrition: NutrientData[];
+  currentDayNutrition: NutrientData[];
+  mood: MoodData[];
+};
 
-export type ConsistencyData = {};
+export type ConsistencyData = {
+  activity: Partial<ActivityData>;
+  nutrient: Partial<NutrientData>;
+};
 
-export type TimingData = {};
+export type TimingData = {
+  type: string;
+  caloricVolume: number;
+};
 
 export type TrendToTrendDataMap = {
   [Trend.Intake]: IntakeData[];
@@ -101,6 +112,7 @@ export type NutrientData = {
 
 export type MoodData = {
   index: number;
+  notes: string;
 };
 
 export interface ChartData<T extends keyof TrendToTrendDataMap> {
