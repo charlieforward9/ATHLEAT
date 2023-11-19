@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.6.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.7.1\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -47,12 +47,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "athleatapi",
+            "AddActivities",
             {
               "Fn::Join": [
                 "",
                 [
-                  "athleatapi",
+                  "AddActivities",
                   "-",
                   {
                     "Ref": "env"
@@ -89,12 +89,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "athleatLambdaRole7efc399b",
+            "athleatLambdaRole0f534b21",
             {
               "Fn::Join": [
                 "",
                 [
-                  "athleatLambdaRole7efc399b",
+                  "athleatLambdaRole0f534b21",
                   "-",
                   {
                     "Ref": "env"

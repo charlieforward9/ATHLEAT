@@ -1,11 +1,11 @@
-import { Event } from "@/models";
 import { DataStore } from "aws-amplify";
+import { Event } from "@/models";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 
-export class IntakeService extends TrendService {
+export class TimingService extends TrendService {
   constructor() {
-    super(Trend.Intake);
+    super(Trend.Consistency);
   }
 
   async getData(startDate: Date, endDate: Date): Promise<Event[]> {
@@ -18,9 +18,9 @@ export class IntakeService extends TrendService {
     );
   }
 
-  transformData(events: Event[]): ChartData<Trend.Intake> {
-    const data: ChartData<Trend.Intake> = {
-      trend: Trend.Intake,
+  transformData(events: Event[]): ChartData<Trend.Consistency> {
+    const data: ChartData<Trend.Consistency> = {
+      trend: Trend.Consistency,
       labels: [],
       datasets: [],
     };
@@ -29,7 +29,6 @@ export class IntakeService extends TrendService {
         duration: 0,
         calories: 0,
         distance: 0,
-        pace: 0,
       },
       totalNutrients: Partial<NutrientData> = {
         calories: 0,
@@ -40,8 +39,6 @@ export class IntakeService extends TrendService {
     events.map((e) => {
       let eventDetails = JSON.parse(e.eventJSON!);
 
-      //Get the date of the event
-      //If it matches the current date, add it to the current dataset
       let isSameDay = e.date == startDate;
       if (!isSameDay) {
         data.labels.push(startDate);
@@ -62,9 +59,6 @@ export class IntakeService extends TrendService {
         totalActivities.distance! = isSameDay
           ? totalActivities.distance! + details.distance
           : details.distance;
-        totalActivities.pace! = isSameDay
-          ? totalActivities.pace! + details.pace
-          : details.pace;
       } else if (e.type == "Nutrient") {
         const details = eventDetails as NutrientData;
         totalNutrients.calories! = isSameDay

@@ -3,16 +3,16 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "athleac01c0778",
+    "resourceNameTruncated": "athlea73bcb7c0",
     "userPoolName": "ATHLEAT",
     "autoVerifiedAttributes": [
       "email"
     ],
     "mfaConfiguration": "OFF",
     "mfaTypes": [
-      "TOTP"
+      "SMS Text Message"
     ],
-    "smsAuthenticationMessage": "Your login code is {####}",
+    "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Verification code: {####}",
     "emailVerificationMessage": "Verification code: {####}",
@@ -34,9 +34,9 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "ATHLEAc01c0778_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "ATHLEA73bcb7c0_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "c01c0778",
+    "sharedId": "73bcb7c0",
     "resourceName": "ATHLEAT",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
@@ -50,21 +50,6 @@
     "thirdPartyAuth": false,
     "authProviders": [],
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true,
-    "authRoleArn": {
-      "Fn::GetAtt": [
-        "AuthRole",
-        "Arn"
-      ]
-    },
-    "unauthRoleArn": {
-      "Fn::GetAtt": [
-        "UnauthRole",
-        "Arn"
-      ]
-    },
-    "breakCircularDependency": true,
-    "dependsOn": [],
-    "hostedUI": false
+    "useEnabledMfas": true
   }
 }

@@ -1,4 +1,4 @@
-import { Trend } from "./types";
+import { ChartData, Trend } from "./types";
 import { Event } from "@/models";
 
 export abstract class TrendService {
@@ -8,4 +8,5 @@ export abstract class TrendService {
   public trend: Trend;
 
   abstract getData(startDate: Date, endDate: Date): Promise<Event[]>;
+  abstract transformData(events: Event[]): ChartData<Trend>;
 }

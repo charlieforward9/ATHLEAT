@@ -3,7 +3,7 @@
   "paths": {
     "/api": {
       "name": "/api",
-      "lambdaFunction": "athleatapi",
+      "lambdaFunction": "AuthenticateStrava",
       "permissions": {
         "setting": "open"
       }
