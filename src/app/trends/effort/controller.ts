@@ -6,6 +6,7 @@ import {
   Trend,
   ChartData,
   ControllerManager,
+  MoodFilter,
 } from "../types";
 import { IntakeService } from "./service";
 
@@ -22,6 +23,7 @@ export class IntakeController extends TrendController {
         [TemporalFilter.Time]: { filter: TemporalFilter.Time, selected: false },
       },
       Activity: {
+        [ActivityFilter.Type]: { filter: ActivityFilter.Type, selected: false },
         [ActivityFilter.Duration]: {
           filter: ActivityFilter.Duration,
           selected: false,
@@ -56,7 +58,9 @@ export class IntakeController extends TrendController {
           selected: false,
         },
       },
-      Mood: {},
+      Mood: {
+        [MoodFilter.Index]: { filter: MoodFilter.Index, selected: false },
+      },
     });
     this.service = new IntakeService();
   }

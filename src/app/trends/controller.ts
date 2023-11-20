@@ -1,5 +1,12 @@
 import { Event } from "@/models";
-import { ChartData, FilterMap, Filters, Trend } from "./types";
+import {
+  ChartData,
+  ControllerManager,
+  FilterMap,
+  Filters,
+  Trend,
+} from "./types";
+import { TrendService } from "./service";
 
 export abstract class TrendController {
   constructor(trend: Trend, filters: FilterMap) {
@@ -9,7 +16,10 @@ export abstract class TrendController {
   public trend: Trend;
   public filters: FilterMap;
 
-  abstract filterData(data: Event[]): ChartData<Trend>;
+  abstract useTrendManager(
+    startDate: Date,
+    endDate: Date
+  ): Promise<ControllerManager>;
 
   toggleFilterSelection<K extends keyof FilterMap>(
     type: K,

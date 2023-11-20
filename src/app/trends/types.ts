@@ -120,3 +120,9 @@ export interface ChartData<T extends keyof TrendToTrendDataMap> {
   labels: string[];
   datasets: TrendToTrendDataMap[T];
 }
+
+//Controller Type
+export interface ControllerManager {
+  filters: FilterMap;
+  chartData: ChartData<Trend>;
+}

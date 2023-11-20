@@ -3,7 +3,7 @@ import { Event } from "@/models";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 
-export class TimingService extends TrendService {
+export class ConsistencyService extends TrendService {
   constructor() {
     super(Trend.Consistency);
   }

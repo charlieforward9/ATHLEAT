@@ -6,11 +6,12 @@ import {
   Trend,
   ChartData,
   ControllerManager,
+  MoodFilter,
 } from "../types";
-import { IntakeService } from "./service";
+import { ConsistencyService } from "./service";
 
-export class IntakeController extends TrendController {
-  private service: IntakeService;
+export class ConsistencyController extends TrendController {
+  private service: ConsistencyService;
   constructor() {
     super(Trend.Intake, {
       Temporal: {
@@ -56,9 +57,11 @@ export class IntakeController extends TrendController {
           selected: false,
         },
       },
-      Mood: {},
+      Mood: {
+        [MoodFilter.Index]: { filter: MoodFilter.Index, selected: false },
+      },
     });
-    this.service = new IntakeService();
+    this.service = new ConsistencyService();
   }
 
   async useTrendManager(
@@ -73,5 +76,3 @@ export class IntakeController extends TrendController {
     };
   }
 }
-const intakeController = new IntakeController();
-intakeController.toggleFilterSelection("Activity", ActivityFilter.Calories);
