@@ -1,8 +1,10 @@
+"use client";
+
+import awsExports from "@/amplifyconfiguration.json";
+import { Amplify } from "aws-amplify";
 import { Knewave } from "next/font/google";
 import Link from "next/link";
-import awsExports from "@/aws-exports";
-import { Amplify } from "aws-amplify";
-Amplify.configure({ ...awsExports, ssr: true });
+Amplify.configure(awsExports, { ssr: true });
 
 const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 
