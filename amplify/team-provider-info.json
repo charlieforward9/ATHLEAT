@@ -22,11 +22,11 @@
         },
         "AuthenticateStrava": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AuthenticateStrava-675a4d79716352715033-build.zip"
+          "s3Key": "amplify-builds/AuthenticateStrava-3947716738422f343957-build.zip"
         },
         "AddActivities": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AddActivities-4f694459686b70736334-build.zip"
+          "s3Key": "amplify-builds/AddActivities-357238734e30572f4657-build.zip"
         }
       }
     }

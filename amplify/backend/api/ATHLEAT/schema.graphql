@@ -4,8 +4,9 @@ type User @model @auth(rules: [{allow: public}, {allow: owner}]) {
   email: AWSEmail!
   stravaAccessToken: String
   stravaRefreshToken: String
-  dateLastUpdated: AWSDateTime
   Events: [Event] @hasMany(indexName: "byUser", fields: ["id"])
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
 type Event @model @auth(rules: [{allow: public}, {allow: owner}]) {
@@ -14,6 +15,8 @@ type Event @model @auth(rules: [{allow: public}, {allow: owner}]) {
   eventJSON: AWSJSON!
   date: AWSDate!
   time: AWSTime!
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
   userID: ID! @index(name: "byUser")
 }
  

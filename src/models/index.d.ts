@@ -9,14 +9,12 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/
 type EagerUser = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<User, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly name: string;
   readonly email: string;
   readonly stravaAccessToken?: string | null;
   readonly stravaRefreshToken?: string | null;
-  readonly dateLastUpdated?: string | null;
   readonly Events?: (Event | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -25,14 +23,12 @@ type EagerUser = {
 type LazyUser = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<User, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly name: string;
   readonly email: string;
   readonly stravaAccessToken?: string | null;
   readonly stravaRefreshToken?: string | null;
-  readonly dateLastUpdated?: string | null;
   readonly Events: AsyncCollection<Event>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -47,31 +43,29 @@ export declare const User: (new (init: ModelInit<User>) => User) & {
 type EagerEvent = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Event, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly type: string;
   readonly eventJSON: string;
   readonly date: string;
   readonly time: string;
-  readonly userID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly userID: string;
 }
 
 type LazyEvent = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Event, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly type: string;
   readonly eventJSON: string;
   readonly date: string;
   readonly time: string;
-  readonly userID: string;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
+  readonly userID: string;
 }
 
 export declare type Event = LazyLoading extends LazyLoadingDisabled ? EagerEvent : LazyEvent

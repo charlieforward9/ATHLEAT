@@ -18,9 +18,8 @@ def handler(event, context):
         else:
             body = event['body']
 
-            # Extracting item details from the body
-        name = body['name']
-        email = body['email']
+        # Extracting item details from the body
+        userId = body['id']
         stravaCode = body['stravaCode']
 
         # Exchange Strava code for an access token and a refresh token
@@ -28,24 +27,25 @@ def handler(event, context):
         access_token = strava_response['access_token']
         refresh_token = strava_response['refresh_token']
 
-        # Generating a unique ID for the item
-        item_id = str(strava_response['athlete']['id'])
         date_last_updated = datetime.utcnow().isoformat()
+        current_time_iso = datetime.utcnow().isoformat() + 'Z'
 
-        # Putting the item into the DynamoDB table
-        response = table.put_item(
-            Item={
-                'id': item_id,
-                'name': name,
-                'email': email,
-                'stravaAccessToken': access_token,
-                'stravaRefreshToken': refresh_token,
-                'dateLastUpdated': date_last_updated
+        # Updating the item into the DynamoDB table
+        response = table.update_item(
+            Key={'id': userId},
+            UpdateExpression='SET stravaAccessToken = :at, stravaRefreshToken = :rt, '
+                             'dateLastUpdated = :du, createdAt = :ca, updatedAt = :ua',
+            ExpressionAttributeValues={
+                ':at': access_token,
+                ':rt': refresh_token,
+                ':du': date_last_updated,
+                ':ca': current_time_iso,
+                ':ua': current_time_iso,
             }
         )
         return {
             'statusCode': 200,
-            'body': json.dumps('Item created successfully')
+            'body': json.dumps('User updated successfully')
         }
     except Exception as e:
         print(e)
