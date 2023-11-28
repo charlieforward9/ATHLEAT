@@ -9,32 +9,37 @@ import {
 import { TimingService } from "./service";
 
 export class TimingController extends TrendController {
-  private service: TimingService;
   constructor() {
-    super(Trend.Intake, {
-      Temporal: {
-        [TemporalFilter.Start]: {
-          filter: TemporalFilter.Start,
-          selected: true,
+    super(
+      Trend.Intake,
+      {
+        Temporal: {
+          [TemporalFilter.Start]: {
+            filter: TemporalFilter.Start,
+            selected: true,
+          },
+          [TemporalFilter.End]: { filter: TemporalFilter.End, selected: true },
+          [TemporalFilter.Time]: {
+            filter: TemporalFilter.Time,
+            selected: false,
+          },
         },
-        [TemporalFilter.End]: { filter: TemporalFilter.End, selected: true },
-        [TemporalFilter.Time]: { filter: TemporalFilter.Time, selected: false },
-      },
-      Activity: {
-        [ActivityFilter.Calories]: {
-          filter: ActivityFilter.Calories,
-          selected: true,
+        Activity: {
+          [ActivityFilter.Calories]: {
+            filter: ActivityFilter.Calories,
+            selected: true,
+          },
         },
-      },
-      Nutrient: {
-        [NutrientFilter.Calories]: {
-          filter: NutrientFilter.Calories,
-          selected: true,
+        Nutrient: {
+          [NutrientFilter.Calories]: {
+            filter: NutrientFilter.Calories,
+            selected: true,
+          },
         },
+        Mood: {},
       },
-      Mood: {},
-    });
-    this.service = new TimingService();
+      new TimingService()
+    );
   }
 
   async useTrendManager(
