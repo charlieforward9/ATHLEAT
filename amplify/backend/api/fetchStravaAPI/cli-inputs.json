@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/fetchStrava": {
+      "name": "/fetchStrava",
+      "lambdaFunction": "AddActivities",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

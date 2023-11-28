@@ -1,11 +1,9 @@
 "use client";
 
-import Spinner from '../components/Spinner';
+import { signIn, signUp } from "aws-amplify/auth";
+import Spinner from "../components/Spinner";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { Amplify, Auth } from "aws-amplify";
-import awsExports from "@/aws-exports";
-Amplify.configure({ ...awsExports, ssr: true });
 
 const AuthPage = () => {
   // State hooks for login, registration, and confirmation
@@ -23,12 +21,11 @@ const AuthPage = () => {
     event.preventDefault();
     setErrorMessage(""); // Clear any previous errors
 
-
     try {
       //setErrorMessage("");
       if (isLogin) {
         // Sign in the user
-        const result = await Auth.signIn({ username: email, password });
+        const result = await signIn({ username: email, password });
         // if (result) {
 
         setLoading(true);
@@ -39,17 +36,19 @@ const AuthPage = () => {
       } else {
         if (!user) {
           // Sign up the user
-          const newUser = await Auth.signUp({
+          const newUser = await signUp({
             username: email,
             password,
-            attributes: {
-              email,
-              preferred_username: email,
-              gender: "Male",
-              name: "Athleat User",
+            options: {
+              userAttributes: {
+                email,
+                preferred_username: email,
+                gender: "Male",
+                name: "Athleat User",
+              },
             },
           });
-          
+
           setUser(true);
           //TODO: setUser(newUser); // Save the user to state
           // After this point, you would probably want to instruct the user to check their email for the confirmation code.
@@ -90,7 +89,6 @@ const AuthPage = () => {
             </h1>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <form onSubmit={handleSubmit}>
-              
               <div className="flex justify-center">
                 <button
                   type="submit"
