@@ -98,36 +98,33 @@ def handler(event, context):
         }
 
     activities = json.loads(response.data.decode('utf-8'))
-    event_item = {
-        'id': user_id,  # User ID
-        'typeOfEvent': 'stravaActivity',
-        'eventJSON': json.dumps(activities)
-    }
+    current_time_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
+    for activity in activities:
+        activity_date = datetime.datetime.strptime(activity['start_date_local'],
+                                                   '%Y-%m-%dT%H:%M:%SZ').date().isoformat()
+        activity_time = datetime.datetime.strptime(activity['start_date_local'],
+                                                   '%Y-%m-%dT%H:%M:%SZ').time().isoformat()
 
-    # Add each activity to Event table
-    """for activity in activities:
         event_item = {
-            'id': user_id,  # User ID
-            'typeOfEvent': 'stravaActivity',
-            'eventJSON': json.dumps(activity)
+            'id': str(activity['id']),  # Using Strava activity ID as unique identifier
+            'type': 'stravaActivity',
+            'eventJSON': json.dumps(activity),
+            'date': activity_date,
+            'time': activity_time,
+            'userID': user_id,
+            'createdAt': current_time_iso,
+            'updatedAt': current_time_iso,
+            '_lastChangedAt': int(datetime.datetime.utcnow().timestamp()),
+            '_version': 1,
+            '_deleted': False
         }
 
         try:
             event_table.put_item(Item=event_item)
         except ClientError as e:
-            return {
-                'statusCode': 500,
-                'body': json.dumps(f"Error adding event to DynamoDB: {e.response['Error']['Message']}")
-            }
-    """
-    try:
-        event_table.put_item(Item=event_item)
-    except ClientError as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps(f"Error adding event to DynamoDB: {e.response['Error']['Message']}")
-        }
+            # Handle the exception or log it
+            print(f"Error adding event to DynamoDB: {e.response['Error']['Message']}")
     return {
         'statusCode': 200,
         'body': json.dumps(f"Activities added for user {user_id}")

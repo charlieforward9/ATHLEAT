@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/authenticateStrava": {
+      "name": "/authenticateStrava",
+      "lambdaFunction": "AuthenticateStrava",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

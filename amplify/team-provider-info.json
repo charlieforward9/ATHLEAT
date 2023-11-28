@@ -9,7 +9,8 @@
       "UnauthRoleName": "amplify-athleat-dev-140314-unauthRole",
       "StackName": "amplify-athleat-dev-140314",
       "StackId": "arn:aws:cloudformation:us-east-1:719648084595:stack/amplify-athleat-dev-140314/f88ab7d0-80c4-11ee-8bd9-0a19c61fa17f",
-      "AmplifyAppId": "d3s62klvptbnay"
+      "AmplifyAppId": "d3s62klvptbnay",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-athleat-dev-140314-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
@@ -22,12 +23,18 @@
         },
         "AuthenticateStrava": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AuthenticateStrava-675a4d79716352715033-build.zip"
+          "s3Key": "amplify-builds/AuthenticateStrava-3947716738422f343957-build.zip"
         },
         "AddActivities": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AddActivities-4f694459686b70736334-build.zip"
+          "s3Key": "amplify-builds/AddActivities-357238734e30572f4657-build.zip"
         }
+      },
+      "api": {
+        "ATHLEAT": {},
+        "pythonapi": {},
+        "authStravaAPI": {},
+        "fetchStravaAPI": {}
       }
     }
   }

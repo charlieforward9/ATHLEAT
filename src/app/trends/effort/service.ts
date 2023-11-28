@@ -1,5 +1,5 @@
+import { DataStore } from "aws-amplify/datastore";
 import { Event } from "@/models";
-import { DataStore } from "aws-amplify";
 import { TrendService } from "../service";
 import {
   ActivityData,
