@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/intakeChatgpt": {
+      "name": "/intakeChatgpt",
+      "lambdaFunction": "gptparsenutrition",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
