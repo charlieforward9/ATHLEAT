@@ -9,41 +9,34 @@ import { Scatter } from 'react-chartjs-2';
 import FilterPanel from '../../components/FilterPanel';
 import { TrendController } from "../controller";
 import { TimingController } from "./controller";
-import { Filters } from "../types";
+import { ActivityFilter, NutrientFilter, ControllerManager } from "../types";
+import { Filters, ChartData, Trend } from "../types";
+//import { ChartData } from "../types";
 
-const getData = (graphType: any) => {
-  // run queries to get data in future
-  if (graphType == "Calories")
-    return {
-      datasets: [{
-        data: [{x:10,y:10}, {x:6,y:10}, {x:4,y:8}]
-      },
-      {
-        data: [{x:5,y:8}, {x:6,y:8}, {x:2,y:8}, {x:3, y:4}]
-      }
-      ] // Add datasets here
-    }
-  else if (graphType == "Duration")
-    return {
-      datasets: [{
-        data: [{x:5,y:5}, {x:1,y:2}]
-      }] // Add datasets here
-    }
-  else
-    return {
-      datasets: [{
-        data: [{x:20,y:20}, {x:30,y:20}]
-      }] // Add datasets here
-    }
-}
+// const getData = async (controller: TimingController, startDate: string, endDate: string) => {
+  
+//   // else
+//   //   return {
+//   //     datasets: [{
+//   //       data: [{x:20,y:20}, {x:30,y:20}]
+//   //     }] // Add datasets here
+//   //   }
+//   const start = new Date(startDate);
+//   const end = new Date(endDate)
+//   const data = (await controller.useTrendManager(start, end));
+//   return data.chartData.datasets[3];
+//   //return data;
+// }
 
 const TimingPage: React.FC = () => {
-
+  //const chartData =
+  const [dataSet, setDataset] = useState<ChartData<Trend.Timing>>();
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [activityFilter, setActivityFilter] = useState("Calories");
   const [nutritionFilter, setNutritionFilter] = useState("Calories");
   const trendController: TimingController = new TimingController();
+  const [controllerManager, setControllerManager] = useState<ControllerManager>();
 
   Chart.register(LinearScale);
 
@@ -51,12 +44,48 @@ const TimingPage: React.FC = () => {
     setStartDate(startDate);
     setEndDate(endDate);
   };
+
+  useEffect (() => {
+    const start = new Date(startDate);
+    const end = new Date(endDate)
+    const func = async () => {
+      setControllerManager(await trendController.useTrendManager(start, end)); 
+      //return manager;
+    }
+    //const manager = await func();
+    if (controllerManager)
+      setDataset(controllerManager.chartData.datasets[0])
+  }, [startDate, endDate])
   
   const handleFilterChange = (filter: string, activity: boolean) => {
-    if (activity)
+    if (activity) {
+      if (filter == "Calories")
+        trendController.toggleFilterSelection("Activity", ActivityFilter.Calories);
+      else if (filter == "Duration")
+        trendController.toggleFilterSelection("Activity", ActivityFilter.Duration);
+      else if (filter == "Distance")
+        trendController.toggleFilterSelection("Activity", ActivityFilter.Distance);
+      else
+        trendController.toggleFilterSelection("Activity", ActivityFilter.Pace);
+
       setActivityFilter(filter);
-    else
-      setNutritionFilter(filter)
+    }
+      
+    else {
+      if (filter == "Calories")
+        trendController.toggleFilterSelection("Nutrient", NutrientFilter.Calories);
+      else if (filter == "Carbs")
+        trendController.toggleFilterSelection("Nutrient", NutrientFilter.Carbs);
+      else if (filter == "Fat")
+        trendController.toggleFilterSelection("Nutrient", NutrientFilter.Fat);
+      else
+        trendController.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
+      // else if (filter == "Pace")
+      //   trendController.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
+
+      setNutritionFilter(filter);
+    }
+      
     
     // toggle the selected filter on the trendController
     //trendController.toggleFilterSelection("Activity", trendController.filters.Activity.Calories)
@@ -83,7 +112,7 @@ const TimingPage: React.FC = () => {
       <div className="flex-1 p-8 flex">
         <div className="flex-1">
           <Scatter
-            data={getData(activityFilter)}
+            data={dataSet}
             options={{
               plugins: {
                 title: {

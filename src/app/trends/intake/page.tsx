@@ -17,26 +17,30 @@ import {
   ChartData,
 } from "../types";
 
-const getData = (graphType: any) => {
+const getData = async (controller: IntakeController, startDate: string, endDate: string) => {
   // run queries to get data in future
-  if (graphType == "Calories")
-    return {
-      datasets: [{
-        data: [{x:10,y:10}]
-      }] // Add datasets here
-    }
-  else if (graphType == "Duration")
-    return {
-      datasets: [{
-        data: [{x:5,y:5}, {x:1,y:2}]
-      }] // Add datasets here
-    }
-  else
-    return {
-      datasets: [{
-        data: [{x:20,y:20}, {x:30,y:20}]
-      }] // Add datasets here
-    }
+  // if (graphType == "Calories")
+  //   return {
+  //     datasets: [{
+  //       data: [{x:10,y:10}]
+  //     }] // Add datasets here
+  //   }
+  // else if (graphType == "Duration")
+  //   return {
+  //     datasets: [{
+  //       data: [{x:5,y:5}, {x:1,y:2}]
+  //     }] // Add datasets here
+  //   }
+  // else
+  //   return {
+  //     datasets: [{
+  //       data: [{x:20,y:20}, {x:30,y:20}]
+  //     }] // Add datasets here
+  //   }
+  // const start = new Date(startDate);
+  // const end = new Date(endDate)
+  // const data = (await controller.useTrendManager(start, end));
+  // return data.chartData;
 }
 
 
@@ -111,7 +115,7 @@ const IntakePage: React.FC = () => {
       <div className="flex-1 p-8 flex">
         <div className="flex-1">
           <Scatter
-            data={getData(activityFilter)}
+            data={getData(trendController, startDate, endDate)}
             options={{
               plugins: {
                 title: {
