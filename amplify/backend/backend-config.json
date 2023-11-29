@@ -63,6 +63,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "intakeChatgptapi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "gptparsenutrition"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "pythonapi": {
       "dependsOn": [
         {
@@ -123,6 +137,11 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "gptparsenutrition": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -171,6 +190,22 @@
         {
           "category": "function",
           "resourceName": "athleatapi"
+        }
+      ]
+    },
+    "AMPLIFY_function_gptparsenutrition_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "gptparsenutrition"
+        }
+      ]
+    },
+    "AMPLIFY_function_gptparsenutrition_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "gptparsenutrition"
         }
       ]
     }

@@ -28,6 +28,10 @@
         "AddActivities": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
           "s3Key": "amplify-builds/AddActivities-357238734e30572f4657-build.zip"
+        },
+        "gptparsenutrition": {
+          "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
+          "s3Key": "amplify-builds/gptparsenutrition-4c5739706e59526e5361-build.zip"
         }
       },
       "api": {
