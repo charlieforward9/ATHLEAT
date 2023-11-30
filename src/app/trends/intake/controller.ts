@@ -64,7 +64,7 @@ export class IntakeController extends TrendController {
   async useTrendManager(
     startDate: Date,
     endDate: Date
-  ): Promise<ControllerManager> {
+  ): Promise<ControllerManager<Trend.Intake>> {
     return {
       filters: this.filters,
       chartData: this.service.transformData(

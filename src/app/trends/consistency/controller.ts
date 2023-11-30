@@ -67,7 +67,7 @@ export class ConsistencyController extends TrendController {
   async useTrendManager(
     startDate: Date,
     endDate: Date
-  ): Promise<ControllerManager> {
+  ): Promise<ControllerManager<Trend.Consistency>> {
     return {
       filters: this.filters,
       chartData: this.service.transformData(

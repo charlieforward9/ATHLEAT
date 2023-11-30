@@ -19,7 +19,7 @@ export abstract class TrendController {
   abstract useTrendManager(
     startDate: Date,
     endDate: Date
-  ): Promise<ControllerManager>;
+  ): Promise<ControllerManager<Trend>>;
 
   toggleFilterSelection<K extends keyof FilterMap>(
     type: K,

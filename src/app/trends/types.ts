@@ -122,7 +122,7 @@ export interface ChartData<T extends keyof TrendToTrendDataMap> {
 }
 
 //Controller Type
-export interface ControllerManager {
+export interface ControllerManager<T extends Trend> {
   filters: FilterMap;
-  chartData: ChartData<Trend>;
+  chartData: ChartData<T>;
 }
