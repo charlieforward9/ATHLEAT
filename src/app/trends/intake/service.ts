@@ -24,7 +24,7 @@ export class IntakeService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let startDate = events[0].date,
+    let startDate = events[0].date ?? new Date()..toISOString(),
       totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,
