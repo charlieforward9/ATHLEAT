@@ -8,7 +8,6 @@ export type NutrientEventJson = {
   date: string;
   time: string;
   food: string;
-  quantity: number;
   calories: number;
   carbs: number;
   fat: number;

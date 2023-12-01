@@ -39,11 +39,6 @@ export class IntakeController extends TrendController {
         [ActivityFilter.Pace]: { filter: ActivityFilter.Pace, selected: false },
       },
       Nutrient: {
-        [NutrientFilter.Food]: { filter: NutrientFilter.Food, selected: false },
-        [NutrientFilter.Quantity]: {
-          filter: NutrientFilter.Quantity,
-          selected: false,
-        },
         [NutrientFilter.Calories]: {
           filter: NutrientFilter.Calories,
           selected: true,
