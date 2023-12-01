@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { TrendController } from "../trends/controller";
+import { ActivityFilter, Filter, NutrientFilter } from '../trends/types';
 
 interface PanelProps {
     onDateRangeChange: (startDate: string, endDate: string) => void;
@@ -56,6 +57,7 @@ const getNutritionFilters = (trendController: TrendController) => {
 }
 
 const FilterPanel: React.FC<PanelProps> = (props) => {
+
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
     const [activityFilter, setActivityFilter] = useState<string>(props.defaultFilters.activity);
@@ -79,6 +81,24 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
 
         props.onFilterChange(filter, activity);
     }
+
+    useEffect(() => {
+        // Set the initial start date to 1 year ago
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        setStartDate(oneYearAgo.toISOString().split('T')[0]);
+        
+        //console.log(oneYearAgo);
+        
+    
+        // Set the initial end date to today
+        const today = new Date();
+        //console.log(today);
+        setEndDate(today.toISOString().split('T')[0]);
+    
+        // Call the onDateRangeChange callback with initial values
+        props.onDateRangeChange(oneYearAgo.toISOString().split('T')[0], today.toISOString().split('T')[0]);
+    }, []);
 
     const activityFilters = getActivityFilters(props.trendController);
     const nutritionFilters = getNutritionFilters(props.trendController);
