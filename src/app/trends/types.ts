@@ -54,8 +54,6 @@ export enum ActivityFilter {
 }
 
 export enum NutrientFilter {
-  Food = "Food",
-  Quantity = "Quantity",
   Calories = "Calories",
   Carbs = "Carbs",
   Fat = "Fat",
@@ -103,7 +101,6 @@ export type ActivityData = {
 
 export type NutrientData = {
   food: string;
-  quantity: number;
   calories: number;
   carbs: number;
   fat: number;

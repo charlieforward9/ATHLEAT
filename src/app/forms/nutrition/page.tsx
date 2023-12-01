@@ -6,7 +6,6 @@ interface NutritionFormData {
   date: string;
   time: string;
   food: string;
-  quantity: number;
 }
 
 function NutritionForm() {
@@ -15,7 +14,6 @@ function NutritionForm() {
     date: "",
     time: "",
     food: "",
-    quantity: 1,
   });
 
   // Handler for input value changes
@@ -32,7 +30,7 @@ function NutritionForm() {
     e.preventDefault();
 
     // Clear the form
-    setFormData({ date: "", time: "", food: "", quantity: 1 });
+    setFormData({ date: "", time: "", food: "" });
   };
 
   const setDateTimeToNow = () => {
@@ -104,26 +102,6 @@ function NutritionForm() {
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
-          </div>
-          <div className="mb-6 w-full">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Quantity:
-            </label>
-            <div className="flex flex-row">
-              <input
-                type="range"
-                min="1"
-                max="10"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                required
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-              <p className="text-xl min-w-sm w-1/3 text-center">
-                {formData.quantity}
-              </p>
-            </div>
           </div>
           <div className="flex items-center">
             <button
