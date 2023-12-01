@@ -157,8 +157,8 @@ import { Scatter } from 'react-chartjs-2';
 
 const TimingPage: React.FC = () => {
   const controller = new TimingController();
-  const [activityFilter, setActivityFilter] = useState<Filter<ActivityFilter>>();
-  const [nutritionFilter, setNutritionFilter] = useState<Filter<NutrientFilter>>();
+  const [activityFilter, setActivityFilter] = useState<string>('Calories');
+  const [nutritionFilter, setNutritionFilter] = useState<string>('Calories');
   const [combinedData, setCombinedData] = useState<ChartData<"scatter", (Point)[], unknown>>({
     datasets: [],
   });
@@ -187,27 +187,24 @@ const TimingPage: React.FC = () => {
 
       const manager = await controller.useTrendManager(start, end);
       
-      setActivityFilter(
-        Object.values(manager.filters.Activity).find(
-          (filter) => filter.selected
-        )
-      );
-      if (activityFilter === undefined)
-        console.log(Object.values(manager.filters.Activity).find(
-          (filter) => filter.selected
-        ));
+      // setActivityFilter(
+      //   Object.values(manager.filters.Activity).find(
+      //     (filter) => filter.selected
+      //   )
+      // );
+      
       //console.log(activityFilter);
 
-      setNutritionFilter(
-        Object.values(manager.filters.Nutrient).find(
-          (filter) => filter.selected
-        )
-      );
+      // setNutritionFilter(
+      //   Object.values(manager.filters.Nutrient).find(
+      //     (filter) => filter.selected
+      //   )
+      // );
 
       if (activityFilter === undefined) {
         console.log("here");
-        throw new Error("No activity filter selected");
-      } else if (activityFilter.filter === "Calories") {
+        //throw new Error("No activity filter selected");
+      } else if (activityFilter === "Calories") {
         //console.log("here2");
         const activityDataToGoToChart: Point[] = []; //These should be different colors for each dataset
         const nutrientDataToGoToChart: Point[] = [];
@@ -283,7 +280,7 @@ const TimingPage: React.FC = () => {
                   y: {
                     title: {
                       display: true,
-                      text: activityFilter?.filter,
+                      text: activityFilter,
                       font: {
                         size: 15
                       }

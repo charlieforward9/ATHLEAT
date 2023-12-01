@@ -95,8 +95,8 @@ const IntakePage: React.FC = () => {
   // }
 
   const controller = new IntakeController();
-  const [activityFilter, setActivityFilter] = useState<Filter<ActivityFilter>>();
-  const [nutritionFilter, setNutritionFilter] = useState<Filter<NutrientFilter>>();
+  const [activityFilter, setActivityFilter] = useState<string>('Calories');
+  const [nutritionFilter, setNutritionFilter] = useState<string>('Calories');
   // const [activityFilter, setActivityFilter] = useState<string>('Calories');
   // const [nutritionFilter, setNutritionFilter] = useState<string>('Calories');
   // const [activityData, setActivityData] = useState<ChartData<"scatter", (Point)[], unknown>>({
@@ -122,7 +122,46 @@ const IntakePage: React.FC = () => {
     setEndDate(endDate);
   };
 
-  const handleFilterChange = (filter: string, activity: boolean) => {}
+  const handleFilterChange = (filter: string, activity: boolean) => {
+    if (activity) {
+      console.log("filter");
+      if (filter === "Calories") {
+        controller.toggleFilterSelection("Activity", ActivityFilter.Calories);
+        setActivityFilter("Calories");
+      }
+      else if (filter === "Duration") {
+        controller.toggleFilterSelection("Activity", ActivityFilter.Duration);
+        //console.log(controller.filters.Activity.Duration?.selected);
+        setActivityFilter("Duration");
+      }
+      else if (filter === "Distance") {
+        controller.toggleFilterSelection("Activity", ActivityFilter.Distance);
+        setActivityFilter("Distance")
+      }
+      else {
+        controller.toggleFilterSelection("Activity", ActivityFilter.Pace);
+        setActivityFilter("Pace")
+      }
+    }
+    else {
+      if (filter === "Calories") {
+        controller.toggleFilterSelection("Nutrient", NutrientFilter.Calories);
+        setNutritionFilter("Calories");
+      }
+      else if (filter === "Protein") {
+        controller.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
+        setNutritionFilter("Protein");
+      }
+      else if (filter === "Carbs") {
+        controller.toggleFilterSelection("Nutrient", NutrientFilter.Carbs);
+        setNutritionFilter("Carbs");
+      }
+      else {
+        controller.toggleFilterSelection("Nutrient", NutrientFilter.Fat);
+        setNutritionFilter("Fat");
+      }
+    }
+  }
 
   useEffect(() => {
     //This is an async function inside of useEffect that is called immediately after the component is mounted down on line 71
@@ -133,47 +172,45 @@ const IntakePage: React.FC = () => {
 
       const manager = await controller.useTrendManager(start, end);
       
-      setActivityFilter(
-        Object.values(manager.filters.Activity).find(
-          (filter) => filter.selected
-        )
-      );
+      // setActivityFilter(
+      //   Object.values(manager.filters.Activity).find(
+      //     (filter) => filter.selected
+      //   )
+      // );
       
-      setNutritionFilter(
-        Object.values(manager.filters.Nutrient).find(
-          (filter) => filter.selected
-        )
-      );
+      // setNutritionFilter(
+      //   Object.values(manager.filters.Nutrient).find(
+      //     (filter) => filter.selected
+      //   )
+      // );
 
       if (activityFilter === undefined || nutritionFilter === undefined) {
-        throw new Error("No activity filter selected");
+        console.log("here");
       } else if (true) {
         //console.log("here2");
         // const activityDataToGoToChart: Point[] = []; //These should be different colors for each dataset
         // const nutrientDataToGoToChart: Point[] = [];
         let dataToGoInChart: Point[] = [];
-
+        //console.log("here2");
         manager.chartData.datasets.map((dataset, i) => {
           let y, x;
-          if (activityFilter.filter === "Calories")
+          if (activityFilter === "Calories")
             y = dataset.activity.calories;
-          else if (activityFilter.filter === "Distance")
+          else if (activityFilter === "Distance")
             y = dataset.activity.distance;
-          else if (activityFilter.filter === "Duration")
+          else if (activityFilter === "Duration")
             y = dataset.activity.duration;
           else  
             y = dataset.activity.pace;
 
-          if (nutritionFilter.filter === "Calories")
+          if (nutritionFilter === "Calories")
             x = dataset.nutrient.calories;
-          else if (nutritionFilter.filter === "Protein")
+          else if (nutritionFilter === "Protein")
             x = dataset.nutrient.protein;
-          else if (nutritionFilter.filter === "Fat")
+          else if (nutritionFilter === "Fat")
             x = dataset.nutrient.fat;
-          else if (nutritionFilter.filter === "Carbs")
+          else  
             x = dataset.nutrient.carbs;
-          else
-            x = dataset.nutrient.quantity;
 
           const point: Point = {x: x, y: y} as Point;
           dataToGoInChart.push(point);
@@ -209,7 +246,9 @@ const IntakePage: React.FC = () => {
           datasets: [
             {
               data: dataToGoInChart,
-              backgroundColor: "blue"
+              // label: {
+              //   visible: false
+              // }
             }
           ]
         }

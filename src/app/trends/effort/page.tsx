@@ -138,27 +138,27 @@ const EffortPage: React.FC = () => {
           <div className="bg-clear border border-gray-800 p-12 rounded-md mr-4">
             <div className="text-lg font-semibold mb-4">Night Before</div>
             <ul className="list-disc">
-              <li>Food Item</li>
-              <li>Food Item</li>
-              <li>Food Item</li>
+              <li>Lasagn Dinner</li>
+              <li>Red apple</li>
+              <li>Steamed Broccoli</li>
             </ul>
           </div>
 
           <div className="bg-clear border border-gray-800 p-12 rounded-md mr-4">
             <div className="text-lg font-semibold mb-4">Day Of</div>
             <ul className="list-disc">
-              <li>Food Item</li>
-              <li>Food Item</li>
-              <li>Food Item</li>
+              <li>8 oz ribeye</li>
+              <li>Bowl of white rice</li>
+              <li>5 egg omelette</li>
             </ul>
           </div>
 
           <div className="bg-clear border border-gray-800 p-12 rounded-md">
             <div className="text-lg font-semibold mb-4">Morning After</div>
             <ul className="list-disc">
-              <li>Food Item</li>
-              <li>Food Item</li>
-              <li>Food Item</li>
+              <li>red apple</li>
+              <li>Life Granola bar</li>
+              <li>2 scrambled eggs</li>
             </ul>
           </div>
         </div>
