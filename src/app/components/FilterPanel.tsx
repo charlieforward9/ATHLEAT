@@ -145,7 +145,6 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
             onChange={(e) => handleStartDateChange(e.target.value)}
             className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
           />
-<<<<<<< HEAD
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -202,64 +201,6 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
             </div>
           ))}
         </div>
-=======
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            End Date
-          </label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => handleEndDateChange(e.target.value)}
-            className="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-          />
-        </div>
-      </section>
-      <section>
-        <div className="flex flex-col">
-          Activity Filters
-          {activityFilters.map((filterName) => (
-            <div key={filterName} className="flex items-center mb-2">
-              <div
-                onClick={() => handleFilterChange(filterName, true)}
-                className={`mr-2 w-4 h-4 rounded-full border cursor-pointer ${
-                  activityFilter === filterName
-                    ? "bg-blue-500"
-                    : "border-gray-300"
-                }`}
-              >
-                {activityFilter === filterName && (
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                )}
-              </div>
-              <span>{filterName}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section>
-        <div className="flex flex-col">
-          Nutrition Filters
-          {nutritionFilters.map((filterName) => (
-            <div key={filterName} className="flex items-center mb-2">
-              <div
-                onClick={() => handleFilterChange(filterName, false)}
-                className={`mr-2 w-4 h-4 rounded-full border cursor-pointer ${
-                  nutritionFilter === filterName
-                    ? "bg-blue-500"
-                    : "border-gray-300"
-                }`}
-              >
-                {nutritionFilter === filterName && (
-                  <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                )}
-              </div>
-              <span>{filterName}</span>
-            </div>
-          ))}
-        </div>
->>>>>>> 8f033c605be633b3ca58ce84ec04e555496d1665
       </section>
     </div>
   );
