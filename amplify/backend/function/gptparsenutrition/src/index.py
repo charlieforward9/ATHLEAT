@@ -62,14 +62,18 @@ def handler(event, context):
         )
     #parse response into json obj
     json_parsed = json.loads(response.choices[0].message.content)
+    json_parsed['food'] = food_desc
+    json_parsed['date'] = str(body['meal_date'])
+    json_parsed['time'] = str(body['meal_time'])
+
     current_time_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
     event_item = {
         'id': str(uuid.uuid4()),
         'type': 'nutritionEvent',
         'eventJSON': json.dumps(json_parsed),
-        'date': "2023-10-11",
-        'time': "13:42:13",
+        'date': str(body['meal_date']),
+        'time': str(body['meal_time']),
         'createdAt': current_time_iso,
         'updatedAt': current_time_iso,
         'userID': user_id,
