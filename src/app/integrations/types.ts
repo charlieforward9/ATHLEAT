@@ -3,13 +3,12 @@ export type AuthBody = {
   code: string;
 };
 
-export type DataBody = {
+export type FetchBody = {
   id: string;
-  message: string;
 };
 
 export type NutritionBody = {
-  id: string;
+  user_id: string;
   food: string;
   meal_date: string;
   meal_time: string;

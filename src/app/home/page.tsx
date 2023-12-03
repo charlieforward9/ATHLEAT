@@ -3,11 +3,44 @@
 import React from "react";
 import { Knewave } from "next/font/google";
 import { signOut } from "aws-amplify/auth";
-import { revalidatePath } from "next/cache";
+import { useRouter } from "next/navigation";
+import { FetchBody } from "../integrations/types";
+import { StravaService } from "../integrations/strava/StravaService";
 
 const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 
 const HomePage: React.FC = () => {
+  const router = useRouter();
+
+  async function handleSync() {
+    try {
+      const id = localStorage.getItem("currentUserID");
+      console.log(id);
+      if (id != null) {
+        const dataBody: FetchBody = {
+          id: id,
+        };
+        const service = new StravaService();
+        console.log("fetching");
+        const response = await service.fetch(dataBody);
+        console.log("Done");
+      } else {
+        throw new Error("No user id or code");
+      }
+    } catch (error) {
+      console.log("error linking:", error);
+    }
+  }
+
+  async function handleSignOut() {
+    try {
+      await signOut();
+      router.replace("/auth/sign-in");
+    } catch (error) {
+      console.log("error signing out:", error);
+    }
+  }
+
   return (
     <div className="bg-gray-200 min-h-screen flex flex-col items-center">
       {/* Top section */}
@@ -17,21 +50,30 @@ const HomePage: React.FC = () => {
         </div>
         <div className="text-xl flex-grow text-center font-bold"></div>
         <div className="flex items-center space-x-4">
-          <button className="bg-white text-black border border-black px-4 py-2 rounded-md">
-            Log Your Meals
-          </button>
-          <button className="bg-white text-black border border-black px-4 py-2 rounded-md">
-            Sync
-          </button>
           <button
-            className="bg-white text-black w-10 h-10 flex items-center justify-center rounded-full"
+            className="bg-white text-black border border-black px-4 py-2 rounded-md"
             onClick={() => {
-              signOut();
-              revalidatePath("/");
+              router.push("/forms/nutrition");
             }}
           >
-            Me
+            Log Your Meals
           </button>
+          <button
+            className="bg-white text-black border border-black px-4 py-2 rounded-md"
+            onClick={() => {
+              handleSync();
+            }}
+          >
+            Sync
+          </button>
+          <form action={handleSignOut}>
+            <button
+              className="bg-white text-black w-10 h-10 flex items-center justify-center rounded-full"
+              type="submit"
+            >
+              Sign Out
+            </button>
+          </form>
         </div>
       </div>
 

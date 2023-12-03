@@ -1,6 +1,6 @@
 import { post } from "aws-amplify/api";
 import { IntegrationService } from "../IntegrationService";
-import { AuthBody, DataBody, NutritionBody } from "../types";
+import { AuthBody, NutritionBody } from "../types";
 
 export class ChatgptService extends IntegrationService {
   constructor() {
@@ -8,23 +8,7 @@ export class ChatgptService extends IntegrationService {
   }
 
   async authenticate(body: AuthBody): Promise<any> {
-    //TODO: implement
-    // const restOperation = post({
-    //   path: "intakeChatgptapi",
-    //   apiName: "/intakeChatgpt",
-    //   options: {
-    //     body: {
-    //       id: body.id,
-    //       stravaCode: body.code,
-    //     },
-    //   },
-    // });
-    // const response = await restOperation.response;
-    // if (response.statusCode === 200) {
-    //   return response.body;
-    // } else {
-    //   throw new Error("Failed to fetch data with code: " + response.statusCode);
-    // }
+    throw new Error("Method not implemented.");
   }
   /**
    * ChatGPT Nutrition Parsing
@@ -33,14 +17,14 @@ export class ChatgptService extends IntegrationService {
    */
   async fetch(body: NutritionBody): Promise<any> {
     const restOperation = post({
-      path: "intakeChatgptapi",
-      apiName: "/intakeChatgpt",
+      path: "/intakeChatgpt",
+      apiName: "intakeChatgptapi",
       options: {
         body: {
-          id: body.id,
+          user_id: body.user_id,
           food: body.food,
-          date: body.meal_date,
-          time: body.meal_time,
+          meal_date: body.meal_date,
+          meal_time: body.meal_time,
         },
       },
     });
