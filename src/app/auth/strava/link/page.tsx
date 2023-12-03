@@ -18,8 +18,8 @@ function AuthStrava() {
           code: code.toString(),
         };
         const service = new StravaService();
-        const response = service.authenticate(authBody);
-        //router.push(`/home`);
+        const response = await service.authenticate(authBody);
+        router.push(`/home`);
       } else {
         throw new Error("No user id or code");
       }

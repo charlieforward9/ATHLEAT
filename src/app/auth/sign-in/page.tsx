@@ -3,13 +3,10 @@ import React from "react";
 
 import { useRouter } from "next/navigation";
 import { signIn } from "aws-amplify/auth";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { createUser } from "@/graphql/mutations";
 import { User } from "@/models";
 import { DataStore } from "aws-amplify/datastore";
 import { generateClient } from "aws-amplify/api";
-import { datastoreService } from "@/app/DatastoreService";
-
 function SignIn() {
   const [user, setUser] = React.useState({
     email: "",
