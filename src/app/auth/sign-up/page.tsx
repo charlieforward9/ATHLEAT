@@ -1,35 +1,33 @@
 "use client";
-
 import React from "react";
 import { useRouter } from "next/navigation";
 import { signUp } from "aws-amplify/auth";
+import { generateClient } from "aws-amplify/api";
 
 function SignUp() {
-  const [user, setUser] = React.useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
   const router = useRouter();
-
-  async function handleSignUp() {
+  const client = generateClient();
+  async function handleSignUp(formData: FormData) {
     try {
+      const name = formData.get("name")?.toString() ?? "";
+      const email = formData.get("email")?.toString() ?? "";
+      const password = formData.get("password")?.toString() ?? "";
+
       const auth = await signUp({
-        username: user.email,
-        password: user.password,
+        username: email,
+        password: password,
         options: {
           userAttributes: {
-            email: user.email,
-            name: user.name,
-            preferred_username: user.name,
+            email: email,
+            name: name,
+            preferred_username: name,
             gender: "Male",
           },
           autoSignIn: true,
         },
       });
       console.log(auth);
-      router.push(`/auth/confirm-email?email=${user.email}`);
+      router.push(`/auth/confirm-email?email=${email}`);
     } catch (error) {
       console.log("error signing up:", error);
     }
@@ -44,14 +42,7 @@ function SignUp() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            console.log(user);
-            handleSignUp();
-          }}
-        >
+        <form className="space-y-6" action={handleSignUp}>
           <div>
             <label
               htmlFor="name"
@@ -65,12 +56,6 @@ function SignUp() {
                 name="name"
                 type="text"
                 autoComplete="name"
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val !== "") {
-                    setUser({ ...user, name: val });
-                  }
-                }}
                 required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -89,12 +74,6 @@ function SignUp() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val !== "") {
-                    setUser({ ...user, email: val });
-                  }
-                }}
                 required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -116,12 +95,6 @@ function SignUp() {
                 type="password"
                 autoComplete="current-password"
                 required
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val !== "") {
-                    setUser({ ...user, password: val });
-                  }
-                }}
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>

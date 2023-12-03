@@ -1,34 +1,39 @@
 "use client";
 import React from "react";
-
 import { useRouter } from "next/navigation";
 import { signIn } from "aws-amplify/auth";
 import { createUser } from "@/graphql/mutations";
-import { User } from "@/models";
-import { DataStore } from "aws-amplify/datastore";
+import { listUsers } from "@/graphql/queries";
 import { generateClient } from "aws-amplify/api";
-function SignIn() {
-  const [user, setUser] = React.useState({
-    email: "",
-    password: "",
-  });
 
+function SignIn() {
   const router = useRouter();
   const client = generateClient();
+  async function handleSignIn(formData: FormData) {
+    const email = formData.get("email")?.toString() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
 
-  async function handleSignIn() {
     try {
       const auth = await signIn({
-        username: user.email,
-        password: user.password,
+        username: email,
+        password: password,
       });
-      const existingUser = await DataStore.query(User, (u) =>
-        u.email.eq(user.email)
-      );
-
-      if (existingUser.length) {
-        localStorage.setItem("currentUserID", existingUser[0].id);
-        if (existingUser[0].stravaAccessToken) {
+      const users = await client.graphql({
+        query: listUsers,
+        variables: {
+          filter: {
+            email: {
+              eq: email,
+            },
+          },
+        },
+      });
+      const currentUser = users.data.listUsers.items.length
+        ? users.data.listUsers.items.at(0)
+        : undefined;
+      if (currentUser) {
+        localStorage.setItem("currentUserID", currentUser.id);
+        if (users.data.listUsers.items[0].stravaAccessToken) {
           router.push(`/home`);
           return;
         } else {
@@ -40,8 +45,8 @@ function SignIn() {
           query: createUser,
           variables: {
             input: {
-              email: user.email,
-              name: user.password,
+              email: email,
+              name: password,
             },
           },
         });
@@ -63,14 +68,7 @@ function SignIn() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            console.log(user);
-            handleSignIn();
-          }}
-        >
+        <form className="space-y-6" action={handleSignIn}>
           <div>
             <label
               htmlFor="email"
@@ -84,12 +82,6 @@ function SignIn() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val !== "") {
-                    setUser({ ...user, email: val });
-                  }
-                }}
                 required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -111,18 +103,11 @@ function SignIn() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                onChange={(e) => {
-                  const val = e.target.value;
-                  if (val !== "") {
-                    setUser({ ...user, password: val });
-                  }
-                }}
                 required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
-
           <div>
             <button
               type="submit"
