@@ -208,6 +208,22 @@
           "resourceName": "gptparsenutrition"
         }
       ]
+    },
+    "AMPLIFY_function_insertjson_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "insertjson"
+        }
+      ]
+    },
+    "AMPLIFY_function_insertjson_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "insertjson"
+        }
+      ]
     }
   }
 }

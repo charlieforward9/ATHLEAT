@@ -49,6 +49,11 @@ def handler(event, context):
     except ClientError as e:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps(f"Error accessing DynamoDB: {e.response['Error']['Message']}")
         }
 
@@ -56,6 +61,11 @@ def handler(event, context):
     if not user:
         return {
             'statusCode': 404,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps("User not found.")
         }
 
@@ -79,6 +89,11 @@ def handler(event, context):
         except ClientError as e:
             return {
                 'statusCode': 500,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'OPTIONS, POST'
+                },
                 'body': json.dumps(f"Error updating DynamoDB: {e.response['Error']['Message']}")
             }
 
@@ -94,6 +109,11 @@ def handler(event, context):
     if response.status != 200:
         return {
             'statusCode': response.status,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps("Error fetching activities from Strava")
         }
 
@@ -106,10 +126,29 @@ def handler(event, context):
         activity_time = datetime.datetime.strptime(activity['start_date_local'],
                                                    '%Y-%m-%dT%H:%M:%SZ').time().isoformat()
 
+        sport_type = activity.get('sport_type', 'Unknown')  # Use 'sport_type' as the activity type
+        duration = activity.get('moving_time', 0)
+        distance = activity.get('distance', 0.0)
+        pace = activity.get('average_speed', 0.0)
+
+        # Convert kilojoules to kilocalories if 'kilojoules' is present, otherwise default to 0
+        calories = round(activity.get('kilojoules', 0) * 0.239006)  # 1 kilojoule = 0.239006 kilocalories
+
+        # Construct the desired JSON structure
+        event_json = {
+            'date': activity_date,
+            'time': activity_time,
+            'activityType': sport_type,  # Using 'sport_type' for the activity type
+            'duration': duration,
+            'calories': calories,
+            'distance': distance,
+            'pace': pace
+        }
+
         event_item = {
             'id': str(activity['id']),  # Using Strava activity ID as unique identifier
             'type': 'stravaActivity',
-            'eventJSON': json.dumps(activity),
+            'eventJSON': json.dumps(event_json),
             'date': activity_date,
             'time': activity_time,
             'userID': user_id,
@@ -127,5 +166,10 @@ def handler(event, context):
             print(f"Error adding event to DynamoDB: {e.response['Error']['Message']}")
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'OPTIONS, POST'
+        },
         'body': json.dumps(f"Activities added for user {user_id}")
     }
