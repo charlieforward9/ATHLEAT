@@ -1,3 +1,4 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendController } from "../controller";
 import {
   ActivityFilter,
@@ -10,7 +11,7 @@ import { TimingService } from "./service";
 
 export class TimingController extends TrendController {
   private service: TimingService;
-  constructor() {
+  constructor(client: V6Client<never>) {
     super(Trend.Intake, {
       Temporal: {
         [TemporalFilter.Start]: {
@@ -34,7 +35,7 @@ export class TimingController extends TrendController {
       },
       Mood: {},
     });
-    this.service = new TimingService();
+    this.service = new TimingService(client);
   }
 
   async useTrendManager(

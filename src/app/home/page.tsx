@@ -81,7 +81,12 @@ const HomePage: React.FC = () => {
       <div className="w-4/5 flex flex-col items-center">
         <div className=" flex justify-between">
           <div className="w-1/2 p-4">
-            <button className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full">
+            <button
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full"
+              onClick={() => {
+                router.push("/timeline");
+              }}
+            >
               <div>Timeline</div>
               <div className="text-lg text-gray-500">
                 See the combined timeline of your fitness and nutrition habits
@@ -89,7 +94,12 @@ const HomePage: React.FC = () => {
             </button>
           </div>
           <div className="w-1/2 p-4">
-            <button className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full">
+            <button
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full"
+              onClick={() => {
+                router.push("/coach");
+              }}
+            >
               <div>Coach</div>
               <div className="text-lg text-gray-500">
                 Get coached on your data
@@ -104,7 +114,12 @@ const HomePage: React.FC = () => {
         <div className="text-xl items-center font-bold"></div>
         <div className="w-full center flex justify-between mt-8">
           <div className="w-1/4 p-4">
-            <button className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black">
+            <button
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              onClick={() => {
+                router.push("/trends/consistency");
+              }}
+            >
               <div>Consistency Across Activities</div>
               <div className="text-lg text-gray-500">
                 Explore how your workout patterns align with your dietary logs.
@@ -114,7 +129,12 @@ const HomePage: React.FC = () => {
             </button>
           </div>
           <div className="w-1/4 p-4">
-            <button className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black">
+            <button
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              onClick={() => {
+                router.push("/trends/intake");
+              }}
+            >
               <div>Activity and Calorie Intake Analysis</div>
               <div className="text-lg text-gray-500">
                 Examine how your daily exercises might influence your caloric
@@ -124,7 +144,12 @@ const HomePage: React.FC = () => {
             </button>
           </div>
           <div className="w-1/4 p-4">
-            <button className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black">
+            <button
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              onClick={() => {
+                router.push("/trends/timing");
+              }}
+            >
               <div>Exercise vs. Meal Times</div>
               <div className="text-lg text-gray-500">
                 Understand when users tend to exercise (morning, afternoon,
@@ -133,12 +158,17 @@ const HomePage: React.FC = () => {
             </button>
           </div>
           <div className="w-1/4 p-4">
-            <button className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black">
-              <div>Nutritions Role in Recovery</div>
+            <button
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              onClick={() => {
+                router.push("/trends/timeline");
+              }}
+            >
+              <div>Big Effort Analysis</div>
               <div className="text-lg text-gray-500">
-                Study the interval between intense activities and consider if
-                nutritional choices play a role. Are there dietary patterns that
-                aid recovery?
+                Explore how your workout patterns align with your dietary logs.
+                Do you see trends in both your physical activities and eating
+                habits?
               </div>
             </button>
           </div>

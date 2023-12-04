@@ -1,12 +1,14 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { APIResponseEvent } from "@/app/types";
 import { eventsByUserID } from "@/graphql/queries";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { TrendService } from "../service";
 import { ChartData, Trend } from "../types";
 
 export class TimingService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Timing);
+    this.client = client;
   }
 
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
@@ -14,7 +16,7 @@ export class TimingService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
+    const query = await this.client.graphql({
       query: eventsByUserID,
       variables: {
         userID: userID,

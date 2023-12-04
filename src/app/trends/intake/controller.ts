@@ -1,3 +1,4 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendController } from "../controller";
 import {
   ActivityFilter,
@@ -11,7 +12,7 @@ import { IntakeService } from "./service";
 
 export class IntakeController extends TrendController {
   private service: IntakeService;
-  constructor() {
+  constructor(client: V6Client<never>) {
     super(Trend.Intake, {
       Temporal: {
         [TemporalFilter.Start]: {
@@ -53,7 +54,7 @@ export class IntakeController extends TrendController {
       },
       Mood: {},
     });
-    this.service = new IntakeService();
+    this.service = new IntakeService(client);
   }
 
   async useTrendManager(
@@ -68,5 +69,3 @@ export class IntakeController extends TrendController {
     };
   }
 }
-const intakeController = new IntakeController();
-intakeController.toggleFilterSelection("Activity", ActivityFilter.Calories);

@@ -1,12 +1,14 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { eventsByUserID } from "@/graphql/queries";
 import { APIResponseEvent } from "@/app/types";
 
 export class ConsistencyService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Consistency);
+    this.client = client;
   }
 
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
@@ -14,7 +16,7 @@ export class ConsistencyService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
+    const query = await this.client.graphql({
       query: eventsByUserID,
       variables: {
         userID: userID,

@@ -1,22 +1,24 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import { generateClient } from "aws-amplify/api";
 import { IntakeController } from "./controller";
 
 interface bigEffort {
-  name: string,
-  date: string,
-  calories: number,
-  duration: number,
-  distance: number,
+  name: string;
+  date: string;
+  calories: number;
+  duration: number;
+  distance: number;
   // foodDayOf: Array<string>,
   // foodBefore: Array<string>,
   // foodAfter: Array<string>
 }
 
 const EffortPage: React.FC = () => {
-  const controller = new IntakeController();
-  const [filter, setFilter] = useState<string>('Calories');
+  const client = generateClient();
+  const controller = new IntakeController(client);
+  const [filter, setFilter] = useState<string>("Calories");
   // const [stravaActivity, setStravaActivity] = useState<string>('Activity');
   // const [date, setDate] = useState<string>('Date');
   // const [time, setTime] = useState<string>('Time');
@@ -38,23 +40,25 @@ const EffortPage: React.FC = () => {
       const end = new Date();
       const manager = await controller.useTrendManager(start, end);
 
-      let map: {[key: number]: number} = {}
+      let map: { [key: number]: number } = {};
       manager.chartData.datasets.map((dataset, i) => {
         let param;
-        if (filter === "Calories")
-            param = dataset.activity.calories;
-        else if (filter === "Distance")
-          param = dataset.activity.distance;
-        else
-          param = dataset.activity.duration;
-          // else  
-          //   param = dataset.activity.pace;
+        if (filter === "Calories") param = dataset.activity.calories;
+        else if (filter === "Distance") param = dataset.activity.distance;
+        else param = dataset.activity.duration;
+        // else
+        //   param = dataset.activity.pace;
         map[param] = i;
       });
 
-      const sortedKeys = Object.keys(map).map(parseFloat).sort((a, b) => b - a);
-      const sortedEntries: Array<[number, number]> = sortedKeys.map(key => [key, map[key]]);
-      const topEntries = sortedEntries.slice(0,5);
+      const sortedKeys = Object.keys(map)
+        .map(parseFloat)
+        .sort((a, b) => b - a);
+      const sortedEntries: Array<[number, number]> = sortedKeys.map((key) => [
+        key,
+        map[key],
+      ]);
+      const topEntries = sortedEntries.slice(0, 5);
 
       const effortsList: bigEffort[] = [];
       topEntries.forEach(([key, value]) => {
@@ -65,41 +69,36 @@ const EffortPage: React.FC = () => {
           duration: manager.chartData.datasets[value].activity.duration,
           distance: manager.chartData.datasets[value].activity.distance,
           //foodDayOf: manager.chartData.datasets[value].currentDayNutrition[0]
-        }
+        };
         effortsList.push(effortToGoInList);
       });
 
       setEfforts(effortsList);
-      if (effortsList.length > 0)
-        setCurrEffort(efforts[0]);
+      if (effortsList.length > 0) setCurrEffort(efforts[0]);
       setIdx(0);
     }
-    
+
     runManager();
   }, [filter]);
 
   const flipPage = (forward: boolean) => {
-    if (!forward && idx == 0)
-      return;
+    if (!forward && idx == 0) return;
     else if ((forward && idx + 1 == efforts?.length) || efforts.length == 0)
       return;
 
     let currIdx = idx;
     if (forward) {
-      setIdx(idx+1);
+      setIdx(idx + 1);
       currIdx++;
-    }
-    else {
-      setIdx(idx-1);
+    } else {
+      setIdx(idx - 1);
       currIdx--;
-    } 
+    }
 
     setCurrEffort(efforts[currIdx]);
-    
-    
 
     //console.log("After", idx);
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -118,14 +117,15 @@ const EffortPage: React.FC = () => {
       </div>
 
       <div className="border border-gray-800 bg-gray-200 p-8 rounded-lg shadow-md mb-8 flex">
-        {/* Parameters Column */
-        <div className="flex flex-col mr-8">
-          <div className="mb-2">{currEffort.name}</div>
-          <div className="mb-2">Date: {currEffort.date}</div>
-          <div className="mb-2">Duration: {currEffort.duration}min</div>
-          <div className="mb-2">Distance: {currEffort.distance}km</div>
-        </div> }
-        
+        {
+          /* Parameters Column */
+          <div className="flex flex-col mr-8">
+            <div className="mb-2">{currEffort.name}</div>
+            <div className="mb-2">Date: {currEffort.date}</div>
+            <div className="mb-2">Duration: {currEffort.duration}min</div>
+            <div className="mb-2">Distance: {currEffort.distance}km</div>
+          </div>
+        }
 
         {/* Three Larger Boxes with spacing */}
         <div className="flex">
@@ -160,7 +160,10 @@ const EffortPage: React.FC = () => {
 
       {/* Buttons below the big box with matching styles */}
       <div className="flex justify-between">
-        <button className="border border-gray-800 bg-gray-200 text-gray-800 p-2 rounded-md mr-2" onClick={() => flipPage(false)}>
+        <button
+          className="border border-gray-800 bg-gray-200 text-gray-800 p-2 rounded-md mr-2"
+          onClick={() => flipPage(false)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -168,11 +171,19 @@ const EffortPage: React.FC = () => {
             stroke="currentColor"
             className="w-6 h-6"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
 
-        <button className="border border-gray-800 bg-gray-200 text-gray-800 p-2 rounded-md ml-2" onClick={() => flipPage(true)}>
+        <button
+          className="border border-gray-800 bg-gray-200 text-gray-800 p-2 rounded-md ml-2"
+          onClick={() => flipPage(true)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -180,7 +191,12 @@ const EffortPage: React.FC = () => {
             stroke="currentColor"
             className="w-6 h-6"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </button>
       </div>
@@ -189,5 +205,3 @@ const EffortPage: React.FC = () => {
 };
 
 export default EffortPage;
-
-
