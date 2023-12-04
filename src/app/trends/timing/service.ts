@@ -1,5 +1,6 @@
-import { DataStore } from "aws-amplify/datastore";
-import { Event } from "@/models";
+import { APIResponseEvent } from "@/app/types";
+import { eventsByUserID } from "@/graphql/queries";
+import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { TrendService } from "../service";
 import { ChartData, Trend } from "../types";
 
@@ -8,17 +9,39 @@ export class TimingService extends TrendService {
     super(Trend.Timing);
   }
 
-  async getData(startDate: Date, endDate: Date): Promise<Event[]> {
-    return await DataStore.query(Event, (e) =>
-      e.and((e) => [
-        e.date.ge(startDate.toISOString()),
-        e.date.le(endDate.toISOString()),
-        e.or((e) => [e.type.eq("Activity"), e.type.eq("Nutrient")]),
-      ])
-    );
+  async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
+    const userID = localStorage.getItem("currentUserID");
+    if (!userID) {
+      throw new Error("No user logged in");
+    }
+    const query = await cookiesClient.graphql({
+      query: eventsByUserID,
+      variables: {
+        userID: userID,
+        filter: {
+          date: {
+            between: [startDate.toISOString(), endDate.toISOString()],
+          },
+          or: [
+            {
+              type: {
+                eq: "Activity",
+              },
+            },
+            {
+              type: {
+                eq: "Nutrient",
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return query.data.eventsByUserID.items;
   }
 
-  transformData(events: Event[]): ChartData<Trend.Timing> {
+  transformData(events: APIResponseEvent[]): ChartData<Trend.Timing> {
     const data: ChartData<Trend.Timing> = {
       trend: Trend.Timing,
       labels: [],

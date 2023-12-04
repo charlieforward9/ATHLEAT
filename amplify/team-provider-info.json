@@ -23,15 +23,19 @@
         },
         "AuthenticateStrava": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AuthenticateStrava-3947716738422f343957-build.zip"
+          "s3Key": "amplify-builds/AuthenticateStrava-736c496f305550386661-build.zip"
         },
         "AddActivities": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AddActivities-357238734e30572f4657-build.zip"
+          "s3Key": "amplify-builds/AddActivities-736931754b342f444f45-build.zip"
         },
         "gptparsenutrition": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/gptparsenutrition-4c5739706e59526e5361-build.zip"
+          "s3Key": "amplify-builds/gptparsenutrition-4968436b465839644162-build.zip"
+        },
+        "insertjson": {
+          "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
+          "s3Key": "amplify-builds/insertjson-6771664d625761675343-build.zip"
         }
       },
       "api": {

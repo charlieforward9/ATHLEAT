@@ -1,24 +1,47 @@
-import { DataStore } from "aws-amplify/datastore";
-import { Event } from "@/models";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
+import { cookiesClient } from "@/utils/amplifyServerUtils";
+import { eventsByUserID } from "@/graphql/queries";
+import { APIResponseEvent } from "@/app/types";
 
 export class ConsistencyService extends TrendService {
   constructor() {
     super(Trend.Consistency);
   }
 
-  async getData(startDate: Date, endDate: Date): Promise<Event[]> {
-    return await DataStore.query(Event, (e) =>
-      e.and((e) => [
-        e.date.ge(startDate.toISOString()),
-        e.date.le(endDate.toISOString()),
-        e.or((e) => [e.type.eq("Activity"), e.type.eq("Nutrient")]),
-      ])
-    );
+  async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
+    const userID = localStorage.getItem("currentUserID");
+    if (!userID) {
+      throw new Error("No user logged in");
+    }
+    const query = await cookiesClient.graphql({
+      query: eventsByUserID,
+      variables: {
+        userID: userID,
+        filter: {
+          date: {
+            between: [startDate.toISOString(), endDate.toISOString()],
+          },
+          or: [
+            {
+              type: {
+                eq: "Activity",
+              },
+            },
+            {
+              type: {
+                eq: "Nutrient",
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return query.data.eventsByUserID.items;
   }
 
-  transformData(events: Event[]): ChartData<Trend.Consistency> {
+  transformData(events: APIResponseEvent[]): ChartData<Trend.Consistency> {
     const data: ChartData<Trend.Consistency> = {
       trend: Trend.Consistency,
       labels: [],

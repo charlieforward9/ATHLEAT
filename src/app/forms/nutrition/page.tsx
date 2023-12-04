@@ -1,20 +1,18 @@
 "use client";
-
+import { ChatgptService } from "@/app/integrations/openai/ChatgptService";
+import { NutritionBody } from "@/app/integrations/types";
+import { generateClient } from "aws-amplify/api";
 import React, { ChangeEvent, FormEvent, useState } from "react";
-
-interface NutritionFormData {
-  date: string;
-  time: string;
-  food: string;
-}
 
 function NutritionForm() {
   // State to keep track of the input values
-  const [formData, setFormData] = useState({
-    date: "",
-    time: "",
+  const [formData, setFormData] = useState<NutritionBody>({
+    user_id: "",
+    meal_date: "",
+    meal_time: "",
     food: "",
   });
+  const client = generateClient();
 
   // Handler for input value changes
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,20 +25,32 @@ function NutritionForm() {
 
   // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const currentUserID = localStorage.getItem("currentUserID");
     e.preventDefault();
+    if (!currentUserID) {
+      console.log("No user id");
+    } else {
+      const service = new ChatgptService();
+      service.fetch(formData);
 
-    // Clear the form
-    setFormData({ date: "", time: "", food: "" });
+      // Clear the form
+      setFormData({
+        user_id: currentUserID ?? "",
+        meal_date: "",
+        meal_time: "",
+        food: "",
+      });
+    }
   };
 
   const setDateTimeToNow = () => {
     const now = new Date();
-    const date = now.toISOString().split("T")[0];
-    const time = now.toTimeString().split(" ")[0];
+    const meal_date = now.toISOString().split("T")[0];
+    const meal_time = now.toTimeString().split(" ")[0];
     setFormData((prevState) => ({
       ...prevState,
-      date,
-      time,
+      meal_date,
+      meal_time,
     }));
   };
 
@@ -70,7 +80,7 @@ function NutritionForm() {
             <input
               type="date"
               name="date"
-              value={formData.date}
+              value={formData.meal_date}
               onChange={handleChange}
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -83,7 +93,7 @@ function NutritionForm() {
             <input
               type="time"
               name="time"
-              value={formData.time}
+              value={formData.meal_time}
               onChange={handleChange}
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

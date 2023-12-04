@@ -23,3 +23,16 @@ export type ActivityEventJson = {
   distance: number;
   pace: number;
 };
+
+export type APIResponseEvent = {
+  __typename: "Event";
+  id: string;
+  type: string;
+  eventJSON: string;
+  date: string;
+  time: string;
+  createdAt?: string | null | undefined;
+  updatedAt?: string | null | undefined;
+  userID: string;
+  owner?: string | null | undefined;
+}

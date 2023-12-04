@@ -27,6 +27,11 @@ def handler(event, context):
     except ClientError as e:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps(f"Error accessing DynamoDB: {e.response['Error']['Message']}")
         }
 
@@ -34,6 +39,11 @@ def handler(event, context):
     if not user:
         return {
             'statusCode': 404,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps("User not found.")
         }
 
@@ -62,14 +72,18 @@ def handler(event, context):
         )
     #parse response into json obj
     json_parsed = json.loads(response.choices[0].message.content)
+    json_parsed['food'] = food_desc
+    json_parsed['date'] = str(body['meal_date'])
+    json_parsed['time'] = str(body['meal_time'])
+
     current_time_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
     event_item = {
         'id': str(uuid.uuid4()),
         'type': 'nutritionEvent',
         'eventJSON': json.dumps(json_parsed),
-        'date': "2023-10-11",
-        'time': "13:42:13",
+        'date': str(body['meal_date']),
+        'time': str(body['meal_time']),
         'createdAt': current_time_iso,
         'updatedAt': current_time_iso,
         'userID': user_id,
@@ -87,5 +101,10 @@ def handler(event, context):
     # TODO implement
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'OPTIONS, POST'
+        },
         'body': event_item['eventJSON']
     }
