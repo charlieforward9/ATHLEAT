@@ -4,9 +4,14 @@
 // const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 
 import React, { useRef, useEffect, useState } from "react";
-import Chart, { ChartConfiguration, LinearScale, Point, ChartData } from 'chart.js/auto';
-import { Scatter } from 'react-chartjs-2';
-import FilterPanel from '../../components/FilterPanel';
+import Chart, {
+  ChartConfiguration,
+  LinearScale,
+  Point,
+  ChartData,
+} from "chart.js/auto";
+import { Scatter } from "react-chartjs-2";
+import FilterPanel from "../../components/FilterPanel";
 import { TrendController } from "../controller";
 import { IntakeController } from "./controller";
 import {
@@ -14,8 +19,9 @@ import {
   NutrientFilter,
   TemporalFilter,
   Trend,
-  Filter
+  Filter,
 } from "../types";
+import { generateClient } from "aws-amplify/api";
 
 // const getData = async (controller: IntakeController, startDate: string, endDate: string) => {
 //   // run queries to get data in future
@@ -43,10 +49,7 @@ import {
 //   // return data.chartData;
 // }
 
-
-
 const IntakePage: React.FC = () => {
-
   // const [startDate, setStartDate] = useState<string>('');
   // const [endDate, setEndDate] = useState<string>('');
   // const [activityFilter, setActivityFilter] = useState("Calories");
@@ -59,11 +62,10 @@ const IntakePage: React.FC = () => {
   //   setStartDate(startDate);
   //   setEndDate(endDate);
   // };
-  
+
   // const handleFilterChange = (filter: string, activity: boolean) => {
   //   // toggle the selected filter on the trendController
-    
-    
+
   //   if (activity) {
   //     if (filter == "Calories")
   //       trendController.toggleFilterSelection("Activity", ActivityFilter.Calories);
@@ -86,17 +88,17 @@ const IntakePage: React.FC = () => {
   //       trendController.toggleFilterSelection("Nutrient", NutrientFilter.Food);
   //     else if (filter == "Protein")
   //       trendController.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
-  //     else 
+  //     else
   //       trendController.toggleFilterSelection("Nutrient", NutrientFilter.Quantity);
   //     setNutritionFilter(filter)
   //   }
-      
-    
-  // }
 
-  const controller = new IntakeController();
-  const [activityFilter, setActivityFilter] = useState<string>('Calories');
-  const [nutritionFilter, setNutritionFilter] = useState<string>('Calories');
+  // }
+  const client = generateClient();
+
+  const controller = new IntakeController(client);
+  const [activityFilter, setActivityFilter] = useState<string>("Calories");
+  const [nutritionFilter, setNutritionFilter] = useState<string>("Calories");
   // const [activityFilter, setActivityFilter] = useState<string>('Calories');
   // const [nutritionFilter, setNutritionFilter] = useState<string>('Calories');
   // const [activityData, setActivityData] = useState<ChartData<"scatter", (Point)[], unknown>>({
@@ -105,7 +107,9 @@ const IntakePage: React.FC = () => {
   // const [nutritionData, setNutritionData] = useState<ChartData<"scatter", (Point)[], unknown>>({
   //   datasets: [],
   // });
-  const [combinedData, setCombinedData] = useState<ChartData<"scatter", (Point)[], unknown>>({
+  const [combinedData, setCombinedData] = useState<
+    ChartData<"scatter", Point[], unknown>
+  >({
     datasets: [],
   });
 
@@ -128,56 +132,48 @@ const IntakePage: React.FC = () => {
       if (filter === "Calories") {
         controller.toggleFilterSelection("Activity", ActivityFilter.Calories);
         setActivityFilter("Calories");
-      }
-      else if (filter === "Duration") {
+      } else if (filter === "Duration") {
         controller.toggleFilterSelection("Activity", ActivityFilter.Duration);
         //console.log(controller.filters.Activity.Duration?.selected);
         setActivityFilter("Duration");
-      }
-      else if (filter === "Distance") {
+      } else if (filter === "Distance") {
         controller.toggleFilterSelection("Activity", ActivityFilter.Distance);
-        setActivityFilter("Distance")
-      }
-      else {
+        setActivityFilter("Distance");
+      } else {
         controller.toggleFilterSelection("Activity", ActivityFilter.Pace);
-        setActivityFilter("Pace")
+        setActivityFilter("Pace");
       }
-    }
-    else {
+    } else {
       if (filter === "Calories") {
         controller.toggleFilterSelection("Nutrient", NutrientFilter.Calories);
         setNutritionFilter("Calories");
-      }
-      else if (filter === "Protein") {
+      } else if (filter === "Protein") {
         controller.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
         setNutritionFilter("Protein");
-      }
-      else if (filter === "Carbs") {
+      } else if (filter === "Carbs") {
         controller.toggleFilterSelection("Nutrient", NutrientFilter.Carbs);
         setNutritionFilter("Carbs");
-      }
-      else {
+      } else {
         controller.toggleFilterSelection("Nutrient", NutrientFilter.Fat);
         setNutritionFilter("Fat");
       }
     }
-  }
+  };
 
   useEffect(() => {
     //This is an async function inside of useEffect that is called immediately after the component is mounted down on line 71
     async function runTimingManager() {
-      
       let start = new Date(startDate);
       let end = new Date(endDate);
 
       const manager = await controller.useTrendManager(start, end);
-      
+
       // setActivityFilter(
       //   Object.values(manager.filters.Activity).find(
       //     (filter) => filter.selected
       //   )
       // );
-      
+
       // setNutritionFilter(
       //   Object.values(manager.filters.Nutrient).find(
       //     (filter) => filter.selected
@@ -194,53 +190,44 @@ const IntakePage: React.FC = () => {
         //console.log("here2");
         manager.chartData.datasets.map((dataset, i) => {
           let y, x;
-          if (activityFilter === "Calories")
-            y = dataset.activity.calories;
-          else if (activityFilter === "Distance")
-            y = dataset.activity.distance;
-          else if (activityFilter === "Duration")
-            y = dataset.activity.duration;
-          else  
-            y = dataset.activity.pace;
+          if (activityFilter === "Calories") y = dataset.activity.calories;
+          else if (activityFilter === "Distance") y = dataset.activity.distance;
+          else if (activityFilter === "Duration") y = dataset.activity.duration;
+          else y = dataset.activity.pace;
 
-          if (nutritionFilter === "Calories")
-            x = dataset.nutrient.calories;
-          else if (nutritionFilter === "Protein")
-            x = dataset.nutrient.protein;
-          else if (nutritionFilter === "Fat")
-            x = dataset.nutrient.fat;
-          else  
-            x = dataset.nutrient.carbs;
+          if (nutritionFilter === "Calories") x = dataset.nutrient.calories;
+          else if (nutritionFilter === "Protein") x = dataset.nutrient.protein;
+          else if (nutritionFilter === "Fat") x = dataset.nutrient.fat;
+          else x = dataset.nutrient.carbs;
 
-          const point: Point = {x: x, y: y} as Point;
+          const point: Point = { x: x, y: y } as Point;
           dataToGoInChart.push(point);
-        //   if (dataset.type === "Activity") {
-        //     if (manager.filters.Activity.Calories) {
-        //       const date = new Date(manager.chartData.labels[i]);
-        //       const minutes = date.getMinutes();
-        //       const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
-              
-        //       activityDataToGoToChart.push(
-        //         point
-        //       );
-        //     }
-            
-        //   }
-        //   if (dataset.type === "Nutrient") {
-        //     if (manager.filters.Nutrient.Calories) {
-        //       const date = new Date(manager.chartData.labels[i]);
-        //       const minutes = date.getMinutes();
-        //       const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
+          //   if (dataset.type === "Activity") {
+          //     if (manager.filters.Activity.Calories) {
+          //       const date = new Date(manager.chartData.labels[i]);
+          //       const minutes = date.getMinutes();
+          //       const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
 
-        //       nutrientDataToGoToChart.push(
-        //         point
-        //       );
-        //     }
-              
-        //     //Add additional filter cases here
-        //   }
+          //       activityDataToGoToChart.push(
+          //         point
+          //       );
+          //     }
+
+          //   }
+          //   if (dataset.type === "Nutrient") {
+          //     if (manager.filters.Nutrient.Calories) {
+          //       const date = new Date(manager.chartData.labels[i]);
+          //       const minutes = date.getMinutes();
+          //       const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
+
+          //       nutrientDataToGoToChart.push(
+          //         point
+          //       );
+          //     }
+
+          //     //Add additional filter cases here
+          //   }
         });
-        
 
         const combinedDataset = {
           datasets: [
@@ -249,9 +236,9 @@ const IntakePage: React.FC = () => {
               // label: {
               //   visible: false
               // }
-            }
-          ]
-        }
+            },
+          ],
+        };
         setCombinedData(combinedDataset);
       }
     }
@@ -260,7 +247,6 @@ const IntakePage: React.FC = () => {
   });
 
   Chart.register(LinearScale);
-
 
   return (
     <main className="flex flex-col min-h-screen">
@@ -290,41 +276,46 @@ const IntakePage: React.FC = () => {
                   display: true,
                   text: "Fitness and Nutrition Intake",
                   font: {
-                    size: 30
-                  }
-                }},
-                scales: {
-                  y: {
-                    title: {
-                      display: true,
-                      text: "Activity: " + activityFilter,
-                      font: {
-                        size: 15
-                      }
-                    }
+                    size: 30,
                   },
-                  x: {
-                    title: {
-                      display: true,
-                      text: "Nutrition: " + nutritionFilter,
-                      font: {
-                        size: 15
-                      }
-                    }
-                  }
                 },
+              },
+              scales: {
+                y: {
+                  title: {
+                    display: true,
+                    text: "Activity: " + activityFilter,
+                    font: {
+                      size: 15,
+                    },
+                  },
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: "Nutrition: " + nutritionFilter,
+                    font: {
+                      size: 15,
+                    },
+                  },
+                },
+              },
             }}
           />
         </div>
-        
+
         <div className="w-1/4 p-8">
-          <FilterPanel trendController={controller} onDateRangeChange={handleDateRangeChange} onFilterChange={handleFilterChange} defaultFilters={{activity: 'Calories', nutrition: 'Calories'}} />
+          <FilterPanel
+            trendController={controller}
+            onDateRangeChange={handleDateRangeChange}
+            onFilterChange={handleFilterChange}
+            defaultFilters={{ activity: "Calories", nutrition: "Calories" }}
+          />
         </div>
       </div>
     </main>
   );
 };
-
 
 export default IntakePage;
 
@@ -382,7 +373,7 @@ export default IntakePage;
 //           }}
 //         />
 //       </div>
-      
+
 //       <div className="w-1/4 p-8">
 //         <FilterPanel trendController={trendController} onDateRangeChange={handleDateRangeChange} onFilterChange={handleFilterChange} defaultFilters={{activity: 'Calories', nutrition: 'Calories'}} />
 //       </div>

@@ -1,10 +1,15 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import Chart, { ChartConfiguration, LinearScale, Point, ChartData } from 'chart.js/auto';
-import { Line } from 'react-chartjs-2';
-import FilterPanel from '../../components/FilterPanel';
-import { TrendController } from "../controller";
+import { generateClient } from "aws-amplify/api";
+import Chart, {
+  ChartConfiguration,
+  LinearScale,
+  Point,
+  ChartData,
+} from "chart.js/auto";
+import { Line } from "react-chartjs-2";
+import FilterPanel from "../../components/FilterPanel";
 import { ConsistencyController } from "./controller";
 import { Filter, ActivityFilter, NutrientFilter } from "../types";
 
@@ -39,9 +44,8 @@ import { Filter, ActivityFilter, NutrientFilter } from "../types";
 
 
 const ConsistencyPage: React.FC = () => {
-
-  
-  const controller = new ConsistencyController();
+  const client = generateClient();
+  const controller = new ConsistencyController(client);
   // const [activityFilter, setActivityFilter] = useState<Filter<ActivityFilter>>();
   // const [nutritionFilter, setNutritionFilter] = useState<Filter<NutrientFilter>>();
   const [activityFilter, setActivityFilter] = useState<string>("Calories");
@@ -107,12 +111,12 @@ const ConsistencyPage: React.FC = () => {
   useEffect(() => {
     //This is an async function inside of useEffect that is called immediately after the component is mounted down on line 71
     async function runTimingManager() {
-      
+
       let start = new Date(startDate);
       let end = new Date(endDate);
 
       const manager = await controller.useTrendManager(start, end);
-      
+
       // setActivityFilter(
       //   Object.values(manager.filters.Activity).find(
       //     (filter) => filter.selected
@@ -163,9 +167,9 @@ const ConsistencyPage: React.FC = () => {
 
           //const point: Point = {x: x, y: y} as Point;
           //dataToGoInChart.push(point);
-        
+
         });
-        
+
 
         const combinedDataset = {
           labels: labels,
@@ -195,7 +199,7 @@ const ConsistencyPage: React.FC = () => {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-8">
-      
+
       <div className="flex-1 p-8">
         <Line
           data={combinedData}
@@ -208,41 +212,41 @@ const ConsistencyPage: React.FC = () => {
                   size: 40
                 }
               }},
-              scales: {
-                y: {
-                  type: 'linear',
+            scales: {
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
                   display: true,
-                  position: 'left',
-                  title: {
-                    display: true,
-                    text: "Activity: " + activityFilter,
-                    font: {
-                      size: 15
+                  text: "Activity: " + activityFilter,
+                  font: {
+                    size: 15
                     }
                   }
-                },
-                y1: {
-                  type: 'linear',
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
                   display: true,
-                  position: 'right',
-                  title: {
-                    display: true,
-                    text: "Nutrient: " + nutritionFilter,
-                    font: {
-                      size: 15
+                  text: "Nutrient: " + nutritionFilter,
+                  font: {
+                    size: 15
                     }
                   }
                   
                 }
-              },
+            },
           }}
         />
       </div>
-      
+
       <div className="">
         <FilterPanel trendController={controller} onDateRangeChange={handleDateRangeChange} onFilterChange={handleFilterChange} defaultFilters={{activity: 'Calories', nutrition: 'Calories'}} />
       </div>
-      
+
     </main>
   );
 };

@@ -1,3 +1,4 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 import { APIResponseEvent } from "@/app/types";
@@ -5,8 +6,10 @@ import { eventsByUserID } from "@/graphql/queries";
 import { cookiesClient } from "@/utils/amplifyServerUtils";
 
 export class IntakeService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Intake);
+    this.client = client;
   }
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
     const userID = localStorage.getItem("currentUserID");
