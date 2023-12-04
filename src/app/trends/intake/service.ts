@@ -3,7 +3,6 @@ import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 import { APIResponseEvent } from "@/app/types";
 import { eventsByUserID } from "@/graphql/queries";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
 
 export class IntakeService extends TrendService {
   private client: V6Client<never>;
@@ -16,7 +15,7 @@ export class IntakeService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
+    const query = await this.client.graphql({
       query: eventsByUserID,
       variables: {
         userID: userID,
