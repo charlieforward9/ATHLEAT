@@ -24,7 +24,7 @@ export class ConsistencyService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let startDate = events[0].date,
+    let startDate = events.length ? events[0].date : "2023-11-01",
       totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,

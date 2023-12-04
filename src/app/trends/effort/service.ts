@@ -30,7 +30,7 @@ export class IntakeService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let today: string = events[0].date,
+    let today = events.length ? events[0].date : "2023-11-01",
       prevNutrition: NutrientData[] = [],
       currNutrition: NutrientData[] = [],
       mood: MoodData[] = [],

@@ -118,20 +118,14 @@ const EffortPage: React.FC = () => {
       </div>
 
       <div className="border border-gray-800 bg-gray-200 p-8 rounded-lg shadow-md mb-8 flex">
-        {/* Parameters Column
+        {/* Parameters Column */
         <div className="flex flex-col mr-8">
           <div className="mb-2">{currEffort.name}</div>
           <div className="mb-2">Date: {currEffort.date}</div>
           <div className="mb-2">Duration: {currEffort.duration}min</div>
           <div className="mb-2">Distance: {currEffort.distance}km</div>
-        </div> */}
-        {/* Parameters Column */}
-        <div className="flex flex-col mr-8">
-          <div className="mb-2">First Half Marathon</div>
-          <div className="mb-2">Date: 10-3-22</div>
-          <div className="mb-2">Duration: 103min</div>
-          <div className="mb-2">Distance: 23.5km</div>
-        </div>
+        </div> }
+        
 
         {/* Three Larger Boxes with spacing */}
         <div className="flex">
