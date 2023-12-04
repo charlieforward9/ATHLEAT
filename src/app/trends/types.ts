@@ -54,8 +54,6 @@ export enum ActivityFilter {
 }
 
 export enum NutrientFilter {
-  Food = "Food",
-  Quantity = "Quantity",
   Calories = "Calories",
   Carbs = "Carbs",
   Fat = "Fat",
@@ -103,7 +101,6 @@ export type ActivityData = {
 
 export type NutrientData = {
   food: string;
-  quantity: number;
   calories: number;
   carbs: number;
   fat: number;
@@ -122,7 +119,7 @@ export interface ChartData<T extends keyof TrendToTrendDataMap> {
 }
 
 //Controller Type
-export interface ControllerManager {
+export interface ControllerManager<T extends Trend> {
   filters: FilterMap;
-  chartData: ChartData<Trend>;
+  chartData: ChartData<T>;
 }

@@ -1,6 +1,8 @@
+import ConfigureAmplifyClientSide from "@/utils/ConfigureAmplifyClientSide";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Knewave } from "next/font/google";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <ConfigureAmplifyClientSide />
       <body className={inter.className}>{children}</body>
     </html>
   );

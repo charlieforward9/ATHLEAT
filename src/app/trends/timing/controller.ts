@@ -40,7 +40,7 @@ export class TimingController extends TrendController {
   async useTrendManager(
     startDate: Date,
     endDate: Date
-  ): Promise<ControllerManager> {
+  ): Promise<ControllerManager<Trend.Timing>> {
     return {
       filters: this.filters,
       chartData: this.service.transformData(

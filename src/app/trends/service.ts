@@ -1,5 +1,5 @@
+import { APIResponseEvent } from "../types";
 import { ChartData, Trend } from "./types";
-import { Event } from "@/models";
 
 export abstract class TrendService {
   constructor(trend: Trend) {
@@ -7,6 +7,6 @@ export abstract class TrendService {
   }
   public trend: Trend;
 
-  abstract getData(startDate: Date, endDate: Date): Promise<Event[]>;
-  abstract transformData(events: Event[]): ChartData<Trend>;
+  abstract getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]>;
+  abstract transformData(events: APIResponseEvent[]): ChartData<Trend>;
 }

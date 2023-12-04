@@ -27,6 +27,11 @@ def handler(event, context):
     except ClientError as e:
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps(f"Error accessing DynamoDB: {e.response['Error']['Message']}")
         }
 
@@ -34,6 +39,11 @@ def handler(event, context):
     if not user:
         return {
             'statusCode': 404,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps("User not found.")
         }
 
@@ -91,5 +101,10 @@ def handler(event, context):
     # TODO implement
     return {
         'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'OPTIONS, POST'
+        },
         'body': event_item['eventJSON']
     }

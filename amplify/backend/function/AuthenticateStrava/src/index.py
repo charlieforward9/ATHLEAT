@@ -45,6 +45,11 @@ def handler(event, context):
         )
         return {
             'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps('User updated successfully')
         }
     except Exception as e:
@@ -52,6 +57,11 @@ def handler(event, context):
         traceback.print_exc()
         return {
             'statusCode': 500,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'OPTIONS, POST'
+            },
             'body': json.dumps('Error adding item to the database')
         }
 
