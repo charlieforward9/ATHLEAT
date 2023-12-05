@@ -62,7 +62,7 @@ export class ConsistencyService extends TrendService {
         protein: 0,
       };
     events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
 
       let isSameDay = e.date == startDate;
       if (!isSameDay) {

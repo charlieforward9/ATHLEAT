@@ -62,7 +62,7 @@ export class IntakeService extends TrendService {
         protein: 0,
       };
     events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
 
       //Get the date of the event
       //If it matches the current date, add it to the current dataset

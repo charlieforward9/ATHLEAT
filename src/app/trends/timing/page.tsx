@@ -147,6 +147,8 @@
 
 // export default TimingPage;
 
+
+
 import React, { useRef, useEffect, useState } from "react";
 import { TimingController } from "./controller";
 import { ActivityFilter, Filter, NutrientFilter } from "../types";
@@ -159,6 +161,8 @@ import Chart, {
 } from "chart.js/auto";
 import { Scatter } from "react-chartjs-2";
 import { generateClient } from "aws-amplify/api";
+
+
 
 const TimingPage: React.FC = () => {
   const client = generateClient();
@@ -185,6 +189,16 @@ const TimingPage: React.FC = () => {
   };
 
   const handleFilterChange = (filter: string, activity: boolean) => {};
+
+  function timeStringToMinutes(timeString: string): number {
+    const [hours, minutes] = timeString.split(':').map(Number);
+  
+    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
+      throw new Error("Invalid time string format");
+    }
+  
+    return hours * 60 + minutes;
+  }
 
   useEffect(() => {
     //This is an async function inside of useEffect that is called immediately after the component is mounted down on line 71
@@ -217,27 +231,29 @@ const TimingPage: React.FC = () => {
         const nutrientDataToGoToChart: Point[] = [];
 
         manager.chartData.datasets.map((dataset, i) => {
+          //console.log(i);
           if (dataset.type === "Activity") {
             if (manager.filters.Activity.Calories) {
-              const date = new Date(manager.chartData.labels[i]);
-              const minutes = date.getMinutes();
+              // console.log(manager.chartData.labels[i]);
+              // const date = new Date(manager.chartData.labels[i]);
+              // const minutes = date.getMinutes();
+              const minutes = timeStringToMinutes(manager.chartData.labels[i]);
               const point: Point = {
                 x: minutes,
                 y: dataset.caloricVolume,
               } as Point;
-
+              
               activityDataToGoToChart.push(point);
             }
           }
           if (dataset.type === "Nutrient") {
             if (manager.filters.Nutrient.Calories) {
-              const date = new Date(manager.chartData.labels[i]);
-              const minutes = date.getMinutes();
+              const minutes = timeStringToMinutes(manager.chartData.labels[i]);
               const point: Point = {
                 x: minutes,
                 y: dataset.caloricVolume,
               } as Point;
-
+              //console.log(dataset.caloricVolume);
               nutrientDataToGoToChart.push(point);
             }
 
@@ -262,9 +278,9 @@ const TimingPage: React.FC = () => {
         setCombinedData(combinedDataset);
       }
     }
-
+    
     runTimingManager();
-  });
+  }, [startDate, endDate]);
 
   Chart.register(LinearScale);
 

@@ -186,10 +186,10 @@ const IntakePage: React.FC = () => {
         //console.log("here2");
         // const activityDataToGoToChart: Point[] = []; //These should be different colors for each dataset
         // const nutrientDataToGoToChart: Point[] = [];
-        let dataToGoInChart: Point[] = [];
+        const dataToGoInChart: Point[] = [];
         //console.log("here2");
         manager.chartData.datasets.map((dataset, i) => {
-          let y, x;
+          let y: number | undefined, x: number | undefined;
           if (activityFilter === "Calories") y = dataset.activity.calories;
           else if (activityFilter === "Distance") y = dataset.activity.distance;
           else if (activityFilter === "Duration") y = dataset.activity.duration;
@@ -199,34 +199,10 @@ const IntakePage: React.FC = () => {
           else if (nutritionFilter === "Protein") x = dataset.nutrient.protein;
           else if (nutritionFilter === "Fat") x = dataset.nutrient.fat;
           else x = dataset.nutrient.carbs;
-
+          console.log(dataset.activity.calories);
+          console.log(dataset.nutrient.calories);
           const point: Point = { x: x, y: y } as Point;
           dataToGoInChart.push(point);
-          //   if (dataset.type === "Activity") {
-          //     if (manager.filters.Activity.Calories) {
-          //       const date = new Date(manager.chartData.labels[i]);
-          //       const minutes = date.getMinutes();
-          //       const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
-
-          //       activityDataToGoToChart.push(
-          //         point
-          //       );
-          //     }
-
-          //   }
-          //   if (dataset.type === "Nutrient") {
-          //     if (manager.filters.Nutrient.Calories) {
-          //       const date = new Date(manager.chartData.labels[i]);
-          //       const minutes = date.getMinutes();
-          //       const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
-
-          //       nutrientDataToGoToChart.push(
-          //         point
-          //       );
-          //     }
-
-          //     //Add additional filter cases here
-          //   }
         });
 
         const combinedDataset = {
@@ -244,7 +220,7 @@ const IntakePage: React.FC = () => {
     }
 
     runTimingManager();
-  });
+  }, [startDate, endDate, nutritionFilter, activityFilter]);
 
   Chart.register(LinearScale);
 

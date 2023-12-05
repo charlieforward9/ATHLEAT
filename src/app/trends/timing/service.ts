@@ -50,7 +50,7 @@ export class TimingService extends TrendService {
       datasets: [],
     };
     events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
       data.labels.push(e.time);
       data.datasets.push({
         type: e.type,

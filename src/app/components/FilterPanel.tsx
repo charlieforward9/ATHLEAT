@@ -82,9 +82,6 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
         oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
         setStartDate(oneYearAgo.toISOString().split('T')[0]);
         
-        //console.log(oneYearAgo);
-        
-    
         // Set the initial end date to today
         const today = new Date();
         //console.log(today);
