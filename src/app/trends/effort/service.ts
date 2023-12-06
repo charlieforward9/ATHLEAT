@@ -23,18 +23,26 @@ export class IntakeService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await this.client.graphql({
-      query: eventsByUserID,
-      variables: {
-        userID: userID,
-        filter: {
-          date: {
-            between: [startDate.toISOString(), endDate.toISOString()],
+
+    let combinedItems: APIResponseEvent[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      const query = await this.client.graphql({
+        query: eventsByUserID,
+        variables: {
+          userID: userID,
+          filter: {
+            date: {
+              between: [startDate.toISOString(), endDate.toISOString()],
+            },
           },
         },
-      },
-    });
-    return query.data.eventsByUserID.items;
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
+
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Effort> {
@@ -49,7 +57,7 @@ export class IntakeService extends TrendService {
       currNutrition: NutrientData[] = [],
       mood: MoodData[] = [],
       tempDataset: EffortData[] | undefined;
-    sortedEvents.map((e) => {
+    sortedEvents.forEach((e) => {
       let eventDetails = JSON.parse(e.eventJSON!);
       let isSameDay = e.date == today;
       if (!isSameDay) {

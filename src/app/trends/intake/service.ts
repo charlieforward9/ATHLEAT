@@ -15,31 +15,36 @@ export class IntakeService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await this.client.graphql({
-      query: eventsByUserID,
-      variables: {
-        userID: userID,
-        filter: {
-          date: {
-            between: [startDate.toISOString(), endDate.toISOString()],
+    let combinedItems: APIResponseEvent[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      const query = await this.client.graphql({
+        query: eventsByUserID,
+        variables: {
+          userID: userID,
+          filter: {
+            date: {
+              between: [startDate.toISOString(), endDate.toISOString()],
+            },
+            or: [
+              {
+                type: {
+                  eq: "Activity",
+                },
+              },
+              {
+                type: {
+                  eq: "Nutrient",
+                },
+              },
+            ],
           },
-          or: [
-            {
-              type: {
-                eq: "Activity",
-              },
-            },
-            {
-              type: {
-                eq: "Nutrient",
-              },
-            },
-          ],
         },
-      },
-    });
-
-    return query.data.eventsByUserID.items;
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Intake> {
@@ -49,8 +54,7 @@ export class IntakeService extends TrendService {
       datasets: [],
     };
     const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
-    let startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01",
-      totalActivities: Partial<ActivityData> = {
+    let totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,
         distance: 0,
@@ -61,8 +65,9 @@ export class IntakeService extends TrendService {
         carbs: 0,
         fat: 0,
         protein: 0,
-      };
-    events.map((e) => {
+      },
+      startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01";
+    sortedEvents.forEach((e) => {
       let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
 
       //Get the date of the event

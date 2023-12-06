@@ -16,31 +16,36 @@ export class ConsistencyService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await this.client.graphql({
-      query: eventsByUserID,
-      variables: {
-        userID: userID,
-        filter: {
-          date: {
-            between: [startDate.toISOString(), endDate.toISOString()],
+    let combinedItems: APIResponseEvent[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      const query = await this.client.graphql({
+        query: eventsByUserID,
+        variables: {
+          userID: userID,
+          filter: {
+            date: {
+              between: [startDate.toISOString(), endDate.toISOString()],
+            },
+            or: [
+              {
+                type: {
+                  eq: "Activity",
+                },
+              },
+              {
+                type: {
+                  eq: "Nutrient",
+                },
+              },
+            ],
           },
-          or: [
-            {
-              type: {
-                eq: "Activity",
-              },
-            },
-            {
-              type: {
-                eq: "Nutrient",
-              },
-            },
-          ],
         },
-      },
-    });
-
-    return query.data.eventsByUserID.items;
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Consistency> {
@@ -64,7 +69,7 @@ export class ConsistencyService extends TrendService {
       },
       isSameDay = true;
 
-    sortedEvents.map((e) => {
+    sortedEvents.forEach((e) => {
       let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
 
       isSameDay = e.date == startDate;
