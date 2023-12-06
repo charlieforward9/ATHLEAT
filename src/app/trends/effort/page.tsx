@@ -120,7 +120,7 @@ const EffortPage: React.FC = () => {
       const effortsList: bigEffort[] = topEntries.map(([key, value]) => {
         //console.log();
         const effortToGoInList: bigEffort = {
-          name: "name",
+          name: "Activity",
           date: manager.chartData.labels[value],
           calories: manager.chartData.datasets[value].activity.calories,
           duration: manager.chartData.datasets[value].activity.duration,
