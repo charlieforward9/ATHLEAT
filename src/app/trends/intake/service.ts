@@ -3,6 +3,7 @@ import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 import { APIResponseEvent } from "@/app/types";
 import { eventsByUserID } from "@/graphql/queries";
+import { EventsByUserIDQueryVariables } from "@/API";
 
 export class IntakeService extends TrendService {
   private client: V6Client<never>;
@@ -18,28 +19,30 @@ export class IntakeService extends TrendService {
     let combinedItems: APIResponseEvent[] = [];
     let nextToken: string | null | undefined = null;
     do {
-      const query = await this.client.graphql({
-        query: eventsByUserID,
-        variables: {
-          userID: userID,
-          filter: {
-            date: {
-              between: [startDate.toISOString(), endDate.toISOString()],
-            },
-            or: [
-              {
-                type: {
-                  eq: "Activity",
-                },
-              },
-              {
-                type: {
-                  eq: "Nutrient",
-                },
-              },
-            ],
+      let variables: EventsByUserIDQueryVariables = {
+        userID: userID,
+        filter: {
+          date: {
+            between: [startDate.toISOString(), endDate.toISOString()],
           },
+          or: [
+            {
+              type: {
+                eq: "Activity",
+              },
+            },
+            {
+              type: {
+                eq: "Nutrient",
+              },
+            },
+          ],
         },
+        nextToken: nextToken,
+      };
+      let query = await this.client.graphql({
+        query: eventsByUserID,
+        variables,
       });
       nextToken = query.data.eventsByUserID.nextToken;
       combinedItems = combinedItems.concat(query.data.eventsByUserID.items);

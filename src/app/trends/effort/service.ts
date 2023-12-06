@@ -10,6 +10,7 @@ import {
   NutrientData,
   Trend,
 } from "../types";
+import { EventsByUserIDQueryVariables } from "@/API";
 
 export class IntakeService extends TrendService {
   private client: V6Client<never>;
@@ -27,16 +28,18 @@ export class IntakeService extends TrendService {
     let combinedItems: APIResponseEvent[] = [];
     let nextToken: string | null | undefined = null;
     do {
-      const query = await this.client.graphql({
-        query: eventsByUserID,
-        variables: {
-          userID: userID,
-          filter: {
-            date: {
-              between: [startDate.toISOString(), endDate.toISOString()],
-            },
+      let variables: EventsByUserIDQueryVariables = {
+        userID: userID,
+        filter: {
+          date: {
+            between: [startDate.toISOString(), endDate.toISOString()],
           },
         },
+        nextToken: nextToken,
+      };
+      let query = await this.client.graphql({
+        query: eventsByUserID,
+        variables,
       });
       nextToken = query.data.eventsByUserID.nextToken;
       combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
