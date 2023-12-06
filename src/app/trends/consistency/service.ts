@@ -1,12 +1,15 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { eventsByUserID } from "@/graphql/queries";
 import { APIResponseEvent } from "@/app/types";
+import { EventsByUserIDQueryVariables } from "@/API";
 
 export class ConsistencyService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Consistency);
+    this.client = client;
   }
 
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
@@ -14,9 +17,10 @@ export class ConsistencyService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
-      query: eventsByUserID,
-      variables: {
+    let combinedItems: APIResponseEvent[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      let variables: EventsByUserIDQueryVariables = {
         userID: userID,
         filter: {
           date: {
@@ -35,10 +39,16 @@ export class ConsistencyService extends TrendService {
             },
           ],
         },
-      },
-    });
-
-    return query.data.eventsByUserID.items;
+        nextToken: nextToken,
+      };
+      let query = await this.client.graphql({
+        query: eventsByUserID,
+        variables,
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Consistency> {
@@ -47,7 +57,8 @@ export class ConsistencyService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let startDate = events[0].date,
+    const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01",
       totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,
@@ -58,11 +69,13 @@ export class ConsistencyService extends TrendService {
         carbs: 0,
         fat: 0,
         protein: 0,
-      };
-    events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+      },
+      isSameDay = true;
 
-      let isSameDay = e.date == startDate;
+    sortedEvents.forEach((e) => {
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+
+      isSameDay = e.date == startDate;
       if (!isSameDay) {
         data.labels.push(startDate);
         data.datasets.push({
@@ -70,6 +83,17 @@ export class ConsistencyService extends TrendService {
           nutrient: totalNutrients,
         });
         startDate = e.date;
+        totalActivities = {
+          duration: 0,
+          calories: 0,
+          distance: 0,
+        };
+        totalNutrients = {
+          calories: 0,
+          carbs: 0,
+          fat: 0,
+          protein: 0,
+        };
       }
       if (e.type == "Activity") {
         const details = eventDetails as ActivityData;
@@ -98,6 +122,14 @@ export class ConsistencyService extends TrendService {
           : details.protein;
       }
     });
+    //Push last day to DB
+    data.labels.push(startDate);
+    data.datasets.push({
+      activity: totalActivities,
+      nutrient: totalNutrients,
+    });
+
+    console.log(data);
     return data;
   }
 }

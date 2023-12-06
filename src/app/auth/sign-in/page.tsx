@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "aws-amplify/auth";
+import { signIn, signOut } from "aws-amplify/auth";
 import { createUser } from "@/graphql/mutations";
 import { listUsers } from "@/graphql/queries";
 import { generateClient } from "aws-amplify/api";
@@ -14,6 +14,7 @@ function SignIn() {
     const password = formData.get("password")?.toString() ?? "";
 
     try {
+      await signOut();
       const auth = await signIn({
         username: email,
         password: password,

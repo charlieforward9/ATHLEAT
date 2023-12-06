@@ -14,7 +14,7 @@
 // //import { ChartData } from "../types";
 
 // // const getData = async (controller: TimingController, startDate: string, endDate: string) => {
-  
+
 // //   // else
 // //   //   return {
 // //   //     datasets: [{
@@ -49,14 +49,14 @@
 //     const start = new Date(startDate);
 //     const end = new Date(endDate)
 //     const func = async () => {
-//       setControllerManager(await trendController.useTrendManager(start, end)); 
+//       setControllerManager(await trendController.useTrendManager(start, end));
 //       //return manager;
 //     }
 //     //const manager = await func();
 //     if (controllerManager)
 //       setDataset(controllerManager.chartData.datasets[0])
 //   }, [startDate, endDate])
-  
+
 //   const handleFilterChange = (filter: string, activity: boolean) => {
 //     if (activity) {
 //       if (filter == "Calories")
@@ -70,7 +70,7 @@
 
 //       setActivityFilter(filter);
 //     }
-      
+
 //     else {
 //       if (filter == "Calories")
 //         trendController.toggleFilterSelection("Nutrient", NutrientFilter.Calories);
@@ -85,8 +85,7 @@
 
 //       setNutritionFilter(filter);
 //     }
-      
-    
+
 //     // toggle the selected filter on the trendController
 //     //trendController.toggleFilterSelection("Activity", trendController.filters.Activity.Calories)
 //   }
@@ -107,7 +106,7 @@
 //           </div>
 //         </div>
 //       </div>
-  
+
 //       {/* Main Content */}
 //       <div className="flex-1 p-8 flex">
 //         <div className="flex-1">
@@ -136,30 +135,43 @@
 //             }}
 //           />
 //         </div>
-        
+
 //         <div className="w-1/4 p-8">
 //           <FilterPanel trendController={trendController} onDateRangeChange={handleDateRangeChange} onFilterChange={handleFilterChange} defaultFilters={{activity: 'Calories', nutrition: 'Calories'}} />
 //         </div>
 //       </div>
 //     </main>
 //   );
-  
+
 // };
 
 // export default TimingPage;
+
+
 
 import React, { useRef, useEffect, useState } from "react";
 import { TimingController } from "./controller";
 import { ActivityFilter, Filter, NutrientFilter } from "../types";
 import FilterPanel from "@/app/components/FilterPanel";
-import Chart, { ChartConfiguration, LinearScale, ChartData, Point } from 'chart.js/auto';
-import { Scatter } from 'react-chartjs-2';
+import Chart, {
+  ChartConfiguration,
+  LinearScale,
+  ChartData,
+  Point,
+} from "chart.js/auto";
+import { Scatter } from "react-chartjs-2";
+import { generateClient } from "aws-amplify/api";
+
+
 
 const TimingPage: React.FC = () => {
-  const controller = new TimingController();
-  const [activityFilter, setActivityFilter] = useState<Filter<ActivityFilter>>();
-  const [nutritionFilter, setNutritionFilter] = useState<Filter<NutrientFilter>>();
-  const [combinedData, setCombinedData] = useState<ChartData<"scatter", (Point)[], unknown>>({
+  const client = generateClient();
+  const controller = new TimingController(client);
+  const [activityFilter, setActivityFilter] = useState<string>("Calories");
+  const [nutritionFilter, setNutritionFilter] = useState<string>("Calories");
+  const [combinedData, setCombinedData] = useState<
+    ChartData<"scatter", Point[], unknown>
+  >({
     datasets: [],
   });
 
@@ -176,90 +188,99 @@ const TimingPage: React.FC = () => {
     setEndDate(endDate);
   };
 
-  const handleFilterChange = (filter: string, activity: boolean) => {}
+  const handleFilterChange = (filter: string, activity: boolean) => {};
+
+  function timeStringToMinutes(timeString: string): number {
+    const [hours, minutes] = timeString.split(':').map(Number);
+  
+    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
+      throw new Error("Invalid time string format");
+    }
+  
+    return hours * 60 + minutes;
+  }
 
   useEffect(() => {
     //This is an async function inside of useEffect that is called immediately after the component is mounted down on line 71
     async function runTimingManager() {
-      
       let start = new Date(startDate);
       let end = new Date(endDate);
 
       const manager = await controller.useTrendManager(start, end);
-      
-      setActivityFilter(
-        Object.values(manager.filters.Activity).find(
-          (filter) => filter.selected
-        )
-      );
-      if (activityFilter === undefined)
-        console.log(Object.values(manager.filters.Activity).find(
-          (filter) => filter.selected
-        ));
+
+      // setActivityFilter(
+      //   Object.values(manager.filters.Activity).find(
+      //     (filter) => filter.selected
+      //   )
+      // );
+
       //console.log(activityFilter);
 
-      setNutritionFilter(
-        Object.values(manager.filters.Nutrient).find(
-          (filter) => filter.selected
-        )
-      );
+      // setNutritionFilter(
+      //   Object.values(manager.filters.Nutrient).find(
+      //     (filter) => filter.selected
+      //   )
+      // );
 
       if (activityFilter === undefined) {
-        console.log("here");
-        throw new Error("No activity filter selected");
-      } else if (activityFilter.filter === "Calories") {
+        //console.log("here");
+        //throw new Error("No activity filter selected");
+      } else if (activityFilter === "Calories") {
         //console.log("here2");
         const activityDataToGoToChart: Point[] = []; //These should be different colors for each dataset
         const nutrientDataToGoToChart: Point[] = [];
 
         manager.chartData.datasets.map((dataset, i) => {
+          //console.log(i);
           if (dataset.type === "Activity") {
             if (manager.filters.Activity.Calories) {
-              const date = new Date(manager.chartData.labels[i]);
-              const minutes = date.getMinutes();
-              const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
+              // console.log(manager.chartData.labels[i]);
+              // const date = new Date(manager.chartData.labels[i]);
+              // const minutes = date.getMinutes();
+              const minutes = timeStringToMinutes(manager.chartData.labels[i]);
+              const point: Point = {
+                x: minutes,
+                y: dataset.caloricVolume,
+              } as Point;
               
-              activityDataToGoToChart.push(
-                point
-              );
+              activityDataToGoToChart.push(point);
             }
-            
           }
           if (dataset.type === "Nutrient") {
             if (manager.filters.Nutrient.Calories) {
-              const date = new Date(manager.chartData.labels[i]);
-              const minutes = date.getMinutes();
-              const point: Point = {x: minutes, y: dataset.caloricVolume} as Point;
-
-              nutrientDataToGoToChart.push(
-                point
-              );
+              const minutes = timeStringToMinutes(manager.chartData.labels[i]);
+              const point: Point = {
+                x: minutes,
+                y: dataset.caloricVolume,
+              } as Point;
+              //console.log(dataset.caloricVolume);
+              nutrientDataToGoToChart.push(point);
             }
-              
+
             //Add additional filter cases here
           }
         });
-        
+
         const combinedDataset = {
           datasets: [
             {
               label: "Activity",
               data: activityDataToGoToChart,
-              backgroundColor: "blue"
+              backgroundColor: "#FF6384",
             },
             {
               label: "Nutrition",
               data: nutrientDataToGoToChart,
-              backgroundColor: "red"
-            }
-          ]
-        }
+              backgroundColor: "#36A2EB",
+            },
+          ],
+        };
         setCombinedData(combinedDataset);
       }
     }
-
+    
     runTimingManager();
-  });
+  }, [startDate, endDate]);
 
   Chart.register(LinearScale);
 
@@ -276,26 +297,32 @@ const TimingPage: React.FC = () => {
                   display: true,
                   text: "Exercise vs Meal Times",
                   font: {
-                    size: 40
-                  }
-                }},
-                scales: {
-                  y: {
-                    title: {
-                      display: true,
-                      text: activityFilter?.filter,
-                      font: {
-                        size: 15
-                      }
-                    }
+                    size: 40,
                   },
                 },
+              },
+              scales: {
+                y: {
+                  title: {
+                    display: true,
+                    text: activityFilter,
+                    font: {
+                      size: 15,
+                    },
+                  },
+                },
+              },
             }}
           />
         </div>
-        
+
         <div className="w-1/4 p-8">
-          <FilterPanel trendController={controller} onDateRangeChange={handleDateRangeChange} onFilterChange={handleFilterChange} defaultFilters={{activity: 'Calories', nutrition: 'Calories'}} />
+          <FilterPanel
+            trendController={controller}
+            onDateRangeChange={handleDateRangeChange}
+            onFilterChange={handleFilterChange}
+            defaultFilters={{ activity: "Calories", nutrition: "Calories" }}
+          />
         </div>
       </div>
     </main>

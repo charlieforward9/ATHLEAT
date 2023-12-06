@@ -1,4 +1,7 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendService } from "../service";
+import { APIResponseEvent } from "@/app/types";
+import { eventsByUserID } from "@/graphql/queries";
 import {
   ActivityData,
   ChartData,
@@ -7,13 +10,13 @@ import {
   NutrientData,
   Trend,
 } from "../types";
-import { APIResponseEvent } from "@/app/types";
-import { eventsByUserID } from "@/graphql/queries";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
+import { EventsByUserIDQueryVariables } from "@/API";
 
 export class IntakeService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Effort);
+    this.client = client;
   }
 
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
@@ -21,18 +24,28 @@ export class IntakeService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
-      query: eventsByUserID,
-      variables: {
+
+    let combinedItems: APIResponseEvent[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      let variables: EventsByUserIDQueryVariables = {
         userID: userID,
         filter: {
           date: {
             between: [startDate.toISOString(), endDate.toISOString()],
           },
         },
-      },
-    });
-    return query.data.eventsByUserID.items;
+        nextToken: nextToken,
+      };
+      let query = await this.client.graphql({
+        query: eventsByUserID,
+        variables,
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
+
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Effort> {
@@ -41,14 +54,14 @@ export class IntakeService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let today: string = events[0].date,
+    const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let today = sortedEvents.length ? sortedEvents[0].date : "2023-11-01",
       prevNutrition: NutrientData[] = [],
       currNutrition: NutrientData[] = [],
       mood: MoodData[] = [],
       tempDataset: EffortData[] | undefined;
-
-    events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+    sortedEvents.forEach((e) => {
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
       let isSameDay = e.date == today;
       if (!isSameDay) {
         if (tempDataset) {
@@ -97,6 +110,14 @@ export class IntakeService extends TrendService {
         }
       } else {
         console.log("Error: Event type not recognized");
+      }
+
+      //Push last day
+      if (tempDataset) {
+        tempDataset.forEach((e) => {
+          data.labels.push(today);
+          data.datasets.push(e);
+        });
       }
     });
     return data;

@@ -6,8 +6,3 @@ import config from "@/amplifyconfiguration.json";
 export const { runWithAmplifyServerContext } = createServerRunner({
   config,
 });
-
-export const cookiesClient = generateServerClientUsingCookies({
-  config,
-  cookies,
-});

@@ -1,12 +1,15 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { APIResponseEvent } from "@/app/types";
 import { eventsByUserID } from "@/graphql/queries";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
 import { TrendService } from "../service";
 import { ChartData, Trend } from "../types";
+import { EventsByUserIDQueryVariables } from "@/API";
 
 export class TimingService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Timing);
+    this.client = client;
   }
 
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
@@ -14,9 +17,10 @@ export class TimingService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
-      query: eventsByUserID,
-      variables: {
+    let nextToken: string | null | undefined = null;
+    let combinedItems: APIResponseEvent[] = [];
+    do {
+      let variables: EventsByUserIDQueryVariables = {
         userID: userID,
         filter: {
           date: {
@@ -35,10 +39,17 @@ export class TimingService extends TrendService {
             },
           ],
         },
-      },
-    });
+        nextToken: nextToken,
+      };
+      let query = await this.client.graphql({
+        query: eventsByUserID,
+        variables,
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
 
-    return query.data.eventsByUserID.items;
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Timing> {
@@ -47,14 +58,16 @@ export class TimingService extends TrendService {
       labels: [],
       datasets: [],
     };
-    events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
-      data.labels.push(e.time);
-      data.datasets.push({
-        type: e.type,
-        caloricVolume: eventDetails.calories,
+    events
+      .sort((a, b) => (a.date < b.date ? -1 : 1))
+      .forEach((e) => {
+        let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+        data.labels.push(e.time);
+        data.datasets.push({
+          type: e.type,
+          caloricVolume: eventDetails.calories,
+        });
       });
-    });
     return data;
   }
 }

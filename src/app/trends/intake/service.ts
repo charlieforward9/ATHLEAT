@@ -1,21 +1,25 @@
+import { V6Client } from "@aws-amplify/api-graphql";
 import { TrendService } from "../service";
 import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 import { APIResponseEvent } from "@/app/types";
 import { eventsByUserID } from "@/graphql/queries";
-import { cookiesClient } from "@/utils/amplifyServerUtils";
+import { EventsByUserIDQueryVariables } from "@/API";
 
 export class IntakeService extends TrendService {
-  constructor() {
+  private client: V6Client<never>;
+  constructor(client: V6Client<never>) {
     super(Trend.Intake);
+    this.client = client;
   }
   async getData(startDate: Date, endDate: Date): Promise<APIResponseEvent[]> {
     const userID = localStorage.getItem("currentUserID");
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await cookiesClient.graphql({
-      query: eventsByUserID,
-      variables: {
+    let combinedItems: APIResponseEvent[] = [];
+    let nextToken: string | null | undefined = null;
+    do {
+      let variables: EventsByUserIDQueryVariables = {
         userID: userID,
         filter: {
           date: {
@@ -34,10 +38,16 @@ export class IntakeService extends TrendService {
             },
           ],
         },
-      },
-    });
-
-    return query.data.eventsByUserID.items;
+        nextToken: nextToken,
+      };
+      let query = await this.client.graphql({
+        query: eventsByUserID,
+        variables,
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Intake> {
@@ -46,8 +56,8 @@ export class IntakeService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let startDate = events.length ? events[0].date : "2023-11-01",
-      totalActivities: Partial<ActivityData> = {
+    const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,
         distance: 0,
@@ -58,9 +68,10 @@ export class IntakeService extends TrendService {
         carbs: 0,
         fat: 0,
         protein: 0,
-      };
-    events.map((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+      },
+      startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01";
+    sortedEvents.forEach((e) => {
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
 
       //Get the date of the event
       //If it matches the current date, add it to the current dataset
@@ -72,6 +83,18 @@ export class IntakeService extends TrendService {
           nutrient: totalNutrients,
         });
         startDate = e.date;
+        totalActivities = {
+          duration: 0,
+          calories: 0,
+          distance: 0,
+          pace: 0,
+        };
+        totalNutrients = {
+          calories: 0,
+          carbs: 0,
+          fat: 0,
+          protein: 0,
+        };
       }
       if (e.type == "Activity") {
         const details = eventDetails as ActivityData;
@@ -103,6 +126,13 @@ export class IntakeService extends TrendService {
           : details.protein;
       }
     });
+    //Push last day
+    data.labels.push(startDate);
+    data.datasets.push({
+      activity: totalActivities,
+      nutrient: totalNutrients,
+    });
+
     return data;
   }
 }
