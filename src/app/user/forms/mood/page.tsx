@@ -1,5 +1,9 @@
 "use client";
 
+import { CreateEventMutationVariables } from "@/API";
+import { MoodEventJson } from "@/app/types";
+import { createEvent } from "@/graphql/mutations";
+import { generateClient } from "aws-amplify/api";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 
 enum Mood {
@@ -13,6 +17,7 @@ enum Mood {
 function NutritionForm() {
   // State to keep track of the input values
   const [mood, setMood] = useState(5);
+  const client = generateClient();
 
   // Handler for input value changes
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +27,28 @@ function NutritionForm() {
   // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    const userID = localStorage.getItem("currentUserID");
+    if (userID === null) {
+      alert("You must be logged in to submit a mood event");
+      return;
+    }
+    const moodEventJSON: MoodEventJson = {
+      date: new Date().toISOString().split("T")[0],
+      time: new Date().toISOString().split("T")[1].split(".")[0],
+      moodIndex: mood,
+    };
+    client.graphql({
+      query: createEvent,
+      variables: {
+        input: {
+          userID: userID,
+          type: "mood",
+          date: new Date().toISOString().split("T")[0],
+          time: new Date().toISOString().split("T")[1].split(".")[0],
+          eventJSON: JSON.stringify(moodEventJSON),
+        },
+      },
+    });
     // Clear the form
     setMood(0);
   };
