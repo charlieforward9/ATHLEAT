@@ -4,8 +4,8 @@ import React from "react";
 import { Knewave } from "next/font/google";
 import { signOut } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
-import { FetchBody } from "../integrations/types";
-import { StravaService } from "../integrations/strava/StravaService";
+import { StravaService } from "@/app/integrations/strava/StravaService";
+import { FetchBody } from "@/app/integrations/types";
 
 const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 
@@ -50,7 +50,7 @@ const HomePage: React.FC = () => {
           <button
             className="bg-white text-black border border-black px-4 py-2 rounded-md"
             onClick={() => {
-              router.push("/forms/nutrition");
+              router.push("/user/forms/nutrition");
             }}
           >
             Log Your Meals
@@ -81,7 +81,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full"
               onClick={() => {
-                router.push("/timeline");
+                router.push("/user/timeline");
               }}
             >
               <div>Timeline</div>
@@ -94,7 +94,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full"
               onClick={() => {
-                router.push("/coach");
+                router.push("/user/coach");
               }}
             >
               <div>Coach</div>
@@ -114,7 +114,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
               onClick={() => {
-                router.push("/trends/consistency");
+                router.push("/user/trends/consistency");
               }}
             >
               <div>Consistency Across Activities</div>
@@ -129,7 +129,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
               onClick={() => {
-                router.push("/trends/intake");
+                router.push("/user/trends/intake");
               }}
             >
               <div>Activity and Calorie Intake Analysis</div>
@@ -144,7 +144,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
               onClick={() => {
-                router.push("/trends/timing");
+                router.push("/user/trends/timing");
               }}
             >
               <div>Exercise vs. Meal Times</div>
@@ -158,7 +158,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
               onClick={() => {
-                router.push("/trends/timeline");
+                router.push("/user/trends/timeline");
               }}
             >
               <div>Big Effort Analysis</div>

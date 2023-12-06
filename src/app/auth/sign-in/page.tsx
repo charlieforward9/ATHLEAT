@@ -35,7 +35,7 @@ function SignIn() {
       if (currentUser) {
         localStorage.setItem("currentUserID", currentUser.id);
         if (users.data.listUsers.items[0].stravaAccessToken) {
-          router.push(`/home`);
+          router.push(`/user/home`);
           return;
         } else {
           router.push(`/auth/strava`);
