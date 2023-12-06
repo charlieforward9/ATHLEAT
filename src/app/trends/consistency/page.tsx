@@ -128,29 +128,29 @@ const ConsistencyPage: React.FC = () => {
       //     (filter) => filter.selected
       //   )
       // );
-      const getDataPointY = (dataset: ConsistencyData): number => {
-        if (activityFilter === "Calories" && dataset.activity.calories)
-          return dataset.activity.calories;
-        else if (activityFilter === "Distance" && dataset.activity.distance)
-          return dataset.activity.distance;
-        else if (activityFilter === "Duration"&& dataset.activity.duration)
-          return dataset.activity.duration;
-        else if (activityFilter === "Pace" && dataset.activity.pace)
-          return dataset.activity.pace;
-        else return 0;
-      }
+      // const getDataPointY = (dataset: ConsistencyData): number => {
+      //   if (activityFilter === "Calories" && dataset.activity.calories)
+      //     return dataset.activity.calories;
+      //   else if (activityFilter === "Distance" && dataset.activity.distance)
+      //     return dataset.activity.distance;
+      //   else if (activityFilter === "Duration"&& dataset.activity.duration)
+      //     return dataset.activity.duration;
+      //   else if (activityFilter === "Pace" && dataset.activity.pace)
+      //     return dataset.activity.pace;
+      //   else return 0;
+      // }
 
-      const getDataPointX = (dataset: ConsistencyData): number => {
-        if (nutritionFilter === "Calories" && dataset.nutrient.calories)
-          return dataset.nutrient.calories;
-        else if (activityFilter === "Carbs" && dataset.nutrient.carbs)
-          return dataset.nutrient.carbs;
-        else if (activityFilter === "Fat" && dataset.nutrient.fat)
-          return dataset.nutrient.fat;
-        else if (activityFilter === "Protein" && dataset.nutrient.protein)
-          return dataset.nutrient.protein;
-        else return 0;
-      }
+      // const getDataPointX = (dataset: ConsistencyData): number => {
+      //   if (nutritionFilter === "Calories" && dataset.nutrient.calories)
+      //     return dataset.nutrient.calories;
+      //   else if (activityFilter === "Carbs" && dataset.nutrient.carbs)
+      //     return dataset.nutrient.carbs;
+      //   else if (activityFilter === "Fat" && dataset.nutrient.fat)
+      //     return dataset.nutrient.fat;
+      //   else if (activityFilter === "Protein" && dataset.nutrient.protein)
+      //     return dataset.nutrient.protein;
+      //   else return 0;
+      // }
 
       if (activityFilter === undefined || nutritionFilter === undefined) {
         console.log("here");
@@ -162,28 +162,28 @@ const ConsistencyPage: React.FC = () => {
         //console.log("here2");
         //console.log(manager.chartData.datasets)
         manager.chartData.datasets.map((dataset, i) => {
-          // let y, x;
-          // if (activityFilter === "Calories")
-          //   y = dataset.activity.calories;
-          // else if (activityFilter === "Distance")
-          //   y = dataset.activity.distance;
-          // else if (activityFilter === "Duration")
-          //   y = dataset.activity.duration;
-          // else  
-          //   y = dataset.activity.pace;
+          let y, x;
+          if (activityFilter === "Calories")
+            y = dataset.activity.calories;
+          else if (activityFilter === "Distance")
+            y = dataset.activity.distance;
+          else if (activityFilter === "Duration")
+            y = dataset.activity.duration;
+          else  
+            y = dataset.activity.pace;
 
 
-          // if (nutritionFilter === "Calories")
-          //   x = dataset.nutrient.calories;
-          // else if (nutritionFilter === "Protein")
-          //   x = dataset.nutrient.protein;
-          // else if (nutritionFilter === "Fat")
-          //   x = dataset.nutrient.fat;
-          // else  
-          //   x = dataset.nutrient.carbs;
+          if (nutritionFilter === "Calories")
+            x = dataset.nutrient.calories;
+          else if (nutritionFilter === "Protein")
+            x = dataset.nutrient.protein;
+          else if (nutritionFilter === "Fat")
+            x = dataset.nutrient.fat;
+          else  
+            x = dataset.nutrient.carbs;
           
-          const yNum = getDataPointY(dataset);
-          const xNum = getDataPointX(dataset);
+          const yNum = y as number;
+          const xNum = x as number;
           const label: string  = manager.chartData.labels[i];
           activityDataset.push(yNum);
           nutrientDataset.push(xNum);
@@ -201,13 +201,13 @@ const ConsistencyPage: React.FC = () => {
             {
               data: activityDataset,
               yAxisID: 'y',
-              borderColor: "#87ceeb",
+              borderColor: "#FF6384",
               label: "Activity"
             },
             {
               data: nutrientDataset,
               yAxisID: 'y1',
-              borderColor: "#fa8072",
+              borderColor: "#36A2EB",
               label: "Nutrition"
             }
           ]

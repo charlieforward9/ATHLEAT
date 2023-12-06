@@ -126,7 +126,6 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
                                 activityFilter === filterName ? 'bg-blue-500' : 'border-gray-300'
                             }`}
                             >
-                            {activityFilter === filterName && <div className="w-2 h-2 bg-blue-500 rounded-full" />}
                         </div>
                         <span>{filterName}</span>
                     </div>
@@ -144,7 +143,6 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
                                 nutritionFilter === filterName ? 'bg-blue-500' : 'border-gray-300'
                             }`}
                             >
-                            {nutritionFilter === filterName && <div className="w-2 h-2 bg-blue-500 rounded-full" />}
                         </div>
                         <span>{filterName}</span>
                     </div>

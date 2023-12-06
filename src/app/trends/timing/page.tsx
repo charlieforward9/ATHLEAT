@@ -223,7 +223,7 @@ const TimingPage: React.FC = () => {
       // );
 
       if (activityFilter === undefined) {
-        console.log("here");
+        //console.log("here");
         //throw new Error("No activity filter selected");
       } else if (activityFilter === "Calories") {
         //console.log("here2");
@@ -266,12 +266,12 @@ const TimingPage: React.FC = () => {
             {
               label: "Activity",
               data: activityDataToGoToChart,
-              backgroundColor: "blue",
+              backgroundColor: "#FF6384",
             },
             {
               label: "Nutrition",
               data: nutrientDataToGoToChart,
-              backgroundColor: "red",
+              backgroundColor: "#36A2EB",
             },
           ],
         };

@@ -5,7 +5,6 @@ import { generateClient } from "aws-amplify/api";
 import { IntakeController } from "./controller";
 
 interface bigEffort {
-  name: string;
   date: string;
   calories: number;
   duration: number;
@@ -27,7 +26,6 @@ const EffortPage: React.FC = () => {
   // const [distance, setDistance] = useState<number>(0);
   const [efforts, setEfforts] = useState<Array<bigEffort>>([]);
   const [currEffort, setCurrEffort] = useState<bigEffort>({
-    name: "name",
     date: "Today",
     calories: 0,
     duration: 0,
@@ -120,7 +118,6 @@ const EffortPage: React.FC = () => {
       const effortsList: bigEffort[] = topEntries.map(([key, value]) => {
         //console.log();
         const effortToGoInList: bigEffort = {
-          name: "Activity",
           date: manager.chartData.labels[value],
           calories: manager.chartData.datasets[value].activity.calories,
           duration: manager.chartData.datasets[value].activity.duration,
@@ -136,7 +133,6 @@ const EffortPage: React.FC = () => {
       setEfforts(effortsList);
       // Set currEffort to the first entry in effortsList or keep the default values if it's empty
       setCurrEffort(effortsList.length > 0 ? effortsList[0] : {
-        name: "name",
         date: "Today",
         calories: 0,
         duration: 0,
@@ -194,7 +190,6 @@ const EffortPage: React.FC = () => {
         {
           /* Parameters Column */
           <div className="flex flex-col mr-8">
-            <div className="mb-2">{currEffort?.name}</div>
             <div className="mb-2">Date: {currEffort?.date}</div>
             <div className="mb-2">Calories Burned: {currEffort?.calories}cal</div>
             <div className="mb-2">Duration: {currEffort?.duration}min</div>
