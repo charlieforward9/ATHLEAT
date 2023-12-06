@@ -48,7 +48,8 @@ export class IntakeService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let startDate = events.length ? events[0].date : "2023-11-01",
+    const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01",
       totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,
@@ -74,6 +75,18 @@ export class IntakeService extends TrendService {
           nutrient: totalNutrients,
         });
         startDate = e.date;
+        totalActivities = {
+          duration: 0,
+          calories: 0,
+          distance: 0,
+          pace: 0,
+        };
+        totalNutrients = {
+          calories: 0,
+          carbs: 0,
+          fat: 0,
+          protein: 0,
+        };
       }
       if (e.type == "Activity") {
         const details = eventDetails as ActivityData;

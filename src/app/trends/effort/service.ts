@@ -43,13 +43,13 @@ export class IntakeService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let today = events.length ? events[0].date : "2023-11-01",
+    const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let today = sortedEvents.length ? sortedEvents[0].date : "2023-11-01",
       prevNutrition: NutrientData[] = [],
       currNutrition: NutrientData[] = [],
       mood: MoodData[] = [],
       tempDataset: EffortData[] | undefined;
-
-    events.map((e) => {
+    sortedEvents.map((e) => {
       let eventDetails = JSON.parse(e.eventJSON!);
       let isSameDay = e.date == today;
       if (!isSameDay) {

@@ -3,7 +3,6 @@ import { fetchAuthSession } from "aws-amplify/auth/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  console.log(`PATHNAME: ${request.nextUrl.pathname}`);
   if (request.nextUrl.pathname === "/auth") {
     return NextResponse.rewrite(new URL("/auth/sign-in", request.url));
   }
@@ -23,7 +22,6 @@ export async function middleware(request: NextRequest) {
   });
 
   if (authenticated) {
-    console.log(response);
     return response;
   }
 
