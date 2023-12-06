@@ -147,7 +147,7 @@ const ConsistencyPage: React.FC = () => {
           return dataset.nutrient.carbs;
         else if (activityFilter === "Fat" && dataset.nutrient.fat)
           return dataset.nutrient.fat;
-        else if (activityFilter === "Pace" && dataset.nutrient.protein)
+        else if (activityFilter === "Protein" && dataset.nutrient.protein)
           return dataset.nutrient.protein;
         else return 0;
       }
@@ -160,7 +160,7 @@ const ConsistencyPage: React.FC = () => {
         const nutrientDataset: number[] = [];
         const labels: string[] = [];
         //console.log("here2");
-        console.log(manager.chartData.datasets)
+        //console.log(manager.chartData.datasets)
         manager.chartData.datasets.map((dataset, i) => {
           // let y, x;
           // if (activityFilter === "Calories")
@@ -201,12 +201,14 @@ const ConsistencyPage: React.FC = () => {
             {
               data: activityDataset,
               yAxisID: 'y',
-              //backgroundColor: "blue"
+              borderColor: "#87ceeb",
+              label: "Activity"
             },
             {
               data: nutrientDataset,
               yAxisID: 'y1',
-              //backgroundColor: "blue"
+              borderColor: "#fa8072",
+              label: "Nutrition"
             }
           ]
         }
@@ -235,7 +237,8 @@ const ConsistencyPage: React.FC = () => {
                 font: {
                   size: 40
                 }
-              }},
+              },
+            },
             scales: {
               y: {
                 type: 'linear',

@@ -10,8 +10,10 @@ interface bigEffort {
   calories: number;
   duration: number;
   distance: number;
-  // foodDayOf: Array<string>,
-  // foodBefore: Array<string>,
+  foodDayOf: string,
+  foodBefore: string,
+  caloriesDayOf: number,
+  caloriesBefore: number
   // foodAfter: Array<string>
 }
 
@@ -30,11 +32,68 @@ const EffortPage: React.FC = () => {
     calories: 0,
     duration: 0,
     distance: 0,
+    foodDayOf: "food",
+    foodBefore: "food",
+    caloriesDayOf: 0,
+    caloriesBefore: 0
+    // foodAfter: []
   });
   const [idx, setIdx] = useState<number>(0);
 
+  // useEffect(() => {
+  //   //console.log("here");
+  //   async function runManager() {
+  //     const start = new Date();
+  //     start.setFullYear(start.getFullYear() - 3);
+  //     const end = new Date();
+  //     const manager = await controller.useTrendManager(start, end);
+
+  //     let map: { [key: number]: number } = {};
+  //     manager.chartData.datasets.map((dataset, i) => {
+  //       let param;
+  //       if (filter === "Calories") param = dataset.activity.calories;
+  //       else if (filter === "Distance") param = dataset.activity.distance;
+  //       else param = dataset.activity.duration;
+  //       // else
+  //       //   param = dataset.activity.pace;
+  //       map[param] = i;
+  //     });
+
+  //     const sortedKeys = Object.keys(map)
+  //       .map(parseFloat)
+  //       .sort((a, b) => b - a);
+  //     const sortedEntries: Array<[number, number]> = sortedKeys.map((key) => [
+  //       key,
+  //       map[key],
+  //     ]);
+  //     const topEntries = sortedEntries.slice(0, 5);
+
+  //     //console.log(topEntries);
+  //     const effortsList: bigEffort[] = [];
+  //     topEntries.forEach(([key, value]) => {
+  //       const effortToGoInList: bigEffort = {
+  //         name: "name",
+  //         date: manager.chartData.labels[value],
+  //         calories: manager.chartData.datasets[value].activity.calories,
+  //         duration: manager.chartData.datasets[value].activity.duration,
+  //         distance: manager.chartData.datasets[value].activity.distance,
+  //         //foodDayOf: manager.chartData.datasets[value].currentDayNutrition[0]
+  //       };
+  //       effortsList.push(effortToGoInList);
+  //     });
+
+  //     //console.log(effortsList);
+  //     setEfforts(effortsList);
+  //     if (effortsList.length > 0) setCurrEffort(efforts[0]);
+  //     setIdx(0);
+  //   }
+
+  //   runManager();
+  // }, [filter]);
+
   useEffect(() => {
-    async function runManager() {
+    // Function to fetch and process data
+    async function fetchData() {
       const start = new Date();
       start.setFullYear(start.getFullYear() - 3);
       const end = new Date();
@@ -46,8 +105,6 @@ const EffortPage: React.FC = () => {
         if (filter === "Calories") param = dataset.activity.calories;
         else if (filter === "Distance") param = dataset.activity.distance;
         else param = dataset.activity.duration;
-        // else
-        //   param = dataset.activity.pace;
         map[param] = i;
       });
 
@@ -60,26 +117,43 @@ const EffortPage: React.FC = () => {
       ]);
       const topEntries = sortedEntries.slice(0, 5);
 
-      const effortsList: bigEffort[] = [];
-      topEntries.forEach(([key, value]) => {
+      const effortsList: bigEffort[] = topEntries.map(([key, value]) => {
+        //console.log();
         const effortToGoInList: bigEffort = {
           name: "name",
           date: manager.chartData.labels[value],
           calories: manager.chartData.datasets[value].activity.calories,
           duration: manager.chartData.datasets[value].activity.duration,
           distance: manager.chartData.datasets[value].activity.distance,
-          //foodDayOf: manager.chartData.datasets[value].currentDayNutrition[0]
+          foodDayOf: manager.chartData.datasets[value].currentDayNutrition[0]?.food,
+          foodBefore: manager.chartData.datasets[value].previousDayNutrition[0]?.food,
+          caloriesDayOf: manager.chartData.datasets[value].currentDayNutrition[0]?.calories,
+          caloriesBefore: manager.chartData.datasets[value].previousDayNutrition[0]?.calories
         };
-        effortsList.push(effortToGoInList);
+        return effortToGoInList;
       });
 
       setEfforts(effortsList);
-      if (effortsList.length > 0) setCurrEffort(efforts[0]);
+      // Set currEffort to the first entry in effortsList or keep the default values if it's empty
+      setCurrEffort(effortsList.length > 0 ? effortsList[0] : {
+        name: "name",
+        date: "Today",
+        calories: 0,
+        duration: 0,
+        distance: 0,
+        foodDayOf: "food",
+        foodBefore: "food",
+        caloriesDayOf: 0,
+        caloriesBefore: 0
+      });
       setIdx(0);
     }
 
-    runManager();
+    // Call the fetchData function once on the initial render
+    fetchData();
   }, [filter]);
+
+  useEffect(() => {}, [currEffort]);
 
   const flipPage = (forward: boolean) => {
     if (!forward && idx == 0) return;
@@ -120,10 +194,11 @@ const EffortPage: React.FC = () => {
         {
           /* Parameters Column */
           <div className="flex flex-col mr-8">
-            <div className="mb-2">{currEffort.name}</div>
-            <div className="mb-2">Date: {currEffort.date}</div>
-            <div className="mb-2">Duration: {currEffort.duration}min</div>
-            <div className="mb-2">Distance: {currEffort.distance}km</div>
+            <div className="mb-2">{currEffort?.name}</div>
+            <div className="mb-2">Date: {currEffort?.date}</div>
+            <div className="mb-2">Calories Burned: {currEffort?.calories}cal</div>
+            <div className="mb-2">Duration: {currEffort?.duration}min</div>
+            <div className="mb-2">Distance: {currEffort?.distance}km</div>
           </div>
         }
 
@@ -131,31 +206,17 @@ const EffortPage: React.FC = () => {
         <div className="flex">
           <div className="bg-clear border border-gray-800 p-12 rounded-md mr-4">
             <div className="text-lg font-semibold mb-4">Night Before</div>
-            <ul className="list-disc">
-              <li>Lasagn Dinner</li>
-              <li>Red apple</li>
-              <li>Steamed Broccoli</li>
-            </ul>
+            <div>{currEffort?.foodBefore}</div>
+            <div className="mt-auto">Calories Consumed: {currEffort?.caloriesBefore}cal</div>
           </div>
 
           <div className="bg-clear border border-gray-800 p-12 rounded-md mr-4">
             <div className="text-lg font-semibold mb-4">Day Of</div>
-            <ul className="list-disc">
-              <li>8 oz ribeye</li>
-              <li>Bowl of white rice</li>
-              <li>5 egg omelette</li>
-            </ul>
-          </div>
-
-          <div className="bg-clear border border-gray-800 p-12 rounded-md">
-            <div className="text-lg font-semibold mb-4">Morning After</div>
-            <ul className="list-disc">
-              <li>red apple</li>
-              <li>Life Granola bar</li>
-              <li>2 scrambled eggs</li>
-            </ul>
+            <div>{currEffort?.foodDayOf}</div>
+            <div className="mt-auto">Calories Consumed: {currEffort?.caloriesDayOf}cal</div>
           </div>
         </div>
+        
       </div>
 
       {/* Buttons below the big box with matching styles */}

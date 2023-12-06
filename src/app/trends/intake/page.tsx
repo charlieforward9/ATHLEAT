@@ -187,6 +187,7 @@ const IntakePage: React.FC = () => {
         // const activityDataToGoToChart: Point[] = []; //These should be different colors for each dataset
         // const nutrientDataToGoToChart: Point[] = [];
         const dataToGoInChart: Point[] = [];
+        const labels: string[] = [];
         //console.log("here2");
         manager.chartData.datasets.map((dataset, i) => {
           let y: number | undefined, x: number | undefined;
@@ -201,18 +202,20 @@ const IntakePage: React.FC = () => {
           else x = dataset.nutrient.carbs;
           console.log(dataset.activity.calories);
           console.log(dataset.nutrient.calories);
-          const point: Point = { x: x, y: y } as Point;
+          const point: Point = { x: x, y: y, text: `Date: ${manager.chartData.labels[i]}` } as Point;
           dataToGoInChart.push(point);
+          labels.push(manager.chartData.labels[i]);
         });
 
         const combinedDataset = {
+          labels: labels,
           datasets: [
             {
               data: dataToGoInChart,
-              // label: {
-              //   visible: false
-              // }
+              
+              
             },
+            
           ],
         };
         setCombinedData(combinedDataset);
@@ -254,6 +257,9 @@ const IntakePage: React.FC = () => {
                   font: {
                     size: 30,
                   },
+                },
+                legend: {
+                  display: false
                 },
               },
               scales: {

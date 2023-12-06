@@ -61,7 +61,7 @@ export class IntakeService extends TrendService {
       mood: MoodData[] = [],
       tempDataset: EffortData[] | undefined;
     sortedEvents.forEach((e) => {
-      let eventDetails = JSON.parse(e.eventJSON!);
+      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
       let isSameDay = e.date == today;
       if (!isSameDay) {
         if (tempDataset) {
