@@ -126,6 +126,13 @@ export class IntakeService extends TrendService {
           : details.protein;
       }
     });
+    //Push last day
+    data.labels.push(startDate);
+    data.datasets.push({
+      activity: totalActivities,
+      nutrient: totalNutrients,
+    });
+
     return data;
   }
 }
