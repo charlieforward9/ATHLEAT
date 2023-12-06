@@ -49,7 +49,8 @@ export class ConsistencyService extends TrendService {
       labels: [],
       datasets: [],
     };
-    let startDate = events.length ? events[0].date : "2023-11-01",
+    const sortedEvents = events.sort((a, b) => (a.date < b.date ? -1 : 1));
+    let startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01",
       totalActivities: Partial<ActivityData> = {
         duration: 0,
         calories: 0,
@@ -60,11 +61,13 @@ export class ConsistencyService extends TrendService {
         carbs: 0,
         fat: 0,
         protein: 0,
-      };
-    events.map((e) => {
+      },
+      isSameDay = true;
+
+    sortedEvents.map((e) => {
       let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
 
-      let isSameDay = e.date == startDate;
+      isSameDay = e.date == startDate;
       if (!isSameDay) {
         data.labels.push(startDate);
         data.datasets.push({
@@ -72,6 +75,17 @@ export class ConsistencyService extends TrendService {
           nutrient: totalNutrients,
         });
         startDate = e.date;
+        totalActivities = {
+          duration: 0,
+          calories: 0,
+          distance: 0,
+        };
+        totalNutrients = {
+          calories: 0,
+          carbs: 0,
+          fat: 0,
+          protein: 0,
+        };
       }
       if (e.type == "Activity") {
         const details = eventDetails as ActivityData;
