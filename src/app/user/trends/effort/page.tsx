@@ -38,56 +38,6 @@ const EffortPage: React.FC = () => {
   });
   const [idx, setIdx] = useState<number>(0);
 
-  // useEffect(() => {
-  //   //console.log("here");
-  //   async function runManager() {
-  //     const start = new Date();
-  //     start.setFullYear(start.getFullYear() - 3);
-  //     const end = new Date();
-  //     const manager = await controller.useTrendManager(start, end);
-
-  //     let map: { [key: number]: number } = {};
-  //     manager.chartData.datasets.map((dataset, i) => {
-  //       let param;
-  //       if (filter === "Calories") param = dataset.activity.calories;
-  //       else if (filter === "Distance") param = dataset.activity.distance;
-  //       else param = dataset.activity.duration;
-  //       // else
-  //       //   param = dataset.activity.pace;
-  //       map[param] = i;
-  //     });
-
-  //     const sortedKeys = Object.keys(map)
-  //       .map(parseFloat)
-  //       .sort((a, b) => b - a);
-  //     const sortedEntries: Array<[number, number]> = sortedKeys.map((key) => [
-  //       key,
-  //       map[key],
-  //     ]);
-  //     const topEntries = sortedEntries.slice(0, 5);
-
-  //     //console.log(topEntries);
-  //     const effortsList: bigEffort[] = [];
-  //     topEntries.forEach(([key, value]) => {
-  //       const effortToGoInList: bigEffort = {
-  //         name: "name",
-  //         date: manager.chartData.labels[value],
-  //         calories: manager.chartData.datasets[value].activity.calories,
-  //         duration: manager.chartData.datasets[value].activity.duration,
-  //         distance: manager.chartData.datasets[value].activity.distance,
-  //         //foodDayOf: manager.chartData.datasets[value].currentDayNutrition[0]
-  //       };
-  //       effortsList.push(effortToGoInList);
-  //     });
-
-  //     //console.log(effortsList);
-  //     setEfforts(effortsList);
-  //     if (effortsList.length > 0) setCurrEffort(efforts[0]);
-  //     setIdx(0);
-  //   }
-
-  //   runManager();
-  // }, [filter]);
 
   useEffect(() => {
     // Function to fetch and process data

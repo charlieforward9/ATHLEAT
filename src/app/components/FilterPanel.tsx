@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import { TrendController } from "../trends/controller";
-import { ActivityFilter, Filter, NutrientFilter } from '../trends/types';
+import { TrendController } from '../user/trends/controller';
+import { ActivityFilter, Filter, NutrientFilter } from '../user/trends/types';
 
 interface PanelProps {
     onDateRangeChange: (startDate: string, endDate: string) => void;

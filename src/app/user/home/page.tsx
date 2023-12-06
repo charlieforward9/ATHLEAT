@@ -12,38 +12,45 @@ const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 const HomePage: React.FC = () => {
   const router = useRouter();
 
-  async function handleSync() {
-    try {
-      const id = localStorage.getItem("currentUserID");
-      if (id != null) {
-        const dataBody: FetchBody = {
-          id: id,
-        };
-        const service = new StravaService();
-        const response = await service.fetch(dataBody);
-      } else {
-        throw new Error("No user id or code");
-      }
-    } catch (error) {
-      console.log("error linking:", error);
-    }
-  }
+  // async function handleSync() {
+  //   try {
+  //     const id = localStorage.getItem("currentUserID");
+  //     if (id != null) {
+  //       const dataBody: FetchBody = {
+  //         id: id,
+  //       };
+  //       const service = new StravaService();
+  //       const response = await service.fetch(dataBody);
+  //     } else {
+  //       throw new Error("No user id or code");
+  //     }
+  //   } catch (error) {
+  //     console.log("error linking:", error);
+  //   }
+  // }
 
-  async function handleSignOut() {
-    try {
-      await signOut();
-      router.replace("/auth/sign-in");
-    } catch (error) {
-      console.log("error signing out:", error);
-    }
-  }
+  // async function handleSignOut() {
+  //   try {
+  //     await signOut();
+  //     router.replace("/auth/sign-in");
+  //   } catch (error) {
+  //     console.log("error signing out:", error);
+  //   }
+  // }
 
   return (
-    <div className="bg-gray-200 min-h-screen flex flex-col items-center">
+    <div className=" min-h-screen flex flex-col items-center">
       {/* Top section */}
-      <div className="flex items-center w-full p-4 bg-gray-200">
+      {/* <div className="flex items-center w-full p-4 bg-gray-200">
         <div className="flex text-x2l items-center">
-          <button className={knewave.className}>ATHLEAT</button>
+          <button 
+            className={knewave.className}
+            onClick={() => {
+              router.push("/user/home");
+            }}
+          >
+              ATHLEAT
+          </button>
         </div>
         <div className="text-xl flex-grow text-center font-bold"></div>
         <div className="flex items-center space-x-4">
@@ -72,7 +79,7 @@ const HomePage: React.FC = () => {
             </button>
           </form>
         </div>
-      </div>
+      </div> */}
 
       {/* Main content split into two halves */}
       <div className="w-4/5 flex flex-col items-center">
@@ -158,7 +165,7 @@ const HomePage: React.FC = () => {
             <button
               className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
               onClick={() => {
-                router.push("/user/trends/timeline");
+                router.push("/user/trends/effort");
               }}
             >
               <div>Big Effort Analysis</div>
