@@ -27,15 +27,15 @@
         },
         "AddActivities": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/AddActivities-736931754b342f444f45-build.zip"
+          "s3Key": "amplify-builds/AddActivities-7069526373384c34426f-build.zip"
         },
         "gptparsenutrition": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/gptparsenutrition-4968436b465839644162-build.zip"
+          "s3Key": "amplify-builds/gptparsenutrition-2f6a544149773247775a-build.zip"
         },
         "insertjson": {
           "deploymentBucketName": "amplify-athleat-dev-140314-deployment",
-          "s3Key": "amplify-builds/insertjson-6771664d625761675343-build.zip"
+          "s3Key": "amplify-builds/insertjson-47712b414b634b777067-build.zip"
         }
       },
       "api": {

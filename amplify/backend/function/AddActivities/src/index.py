@@ -147,7 +147,7 @@ def handler(event, context):
 
         event_item = {
             'id': str(activity['id']),  # Using Strava activity ID as unique identifier
-            'type': 'stravaActivity',
+            'type': 'Activity',
             'eventJSON': json.dumps(event_json),
             'date': activity_date,
             'time': activity_time,

@@ -49,6 +49,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "databackfill": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "insertjson"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "fetchStravaAPI": {
       "dependsOn": [
         {
@@ -139,6 +153,11 @@
       "service": "Lambda"
     },
     "gptparsenutrition": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "insertjson": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
