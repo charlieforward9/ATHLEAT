@@ -111,6 +111,14 @@ export class IntakeService extends TrendService {
       } else {
         console.log("Error: Event type not recognized");
       }
+
+      //Push last day
+      if (tempDataset) {
+        tempDataset.forEach((e) => {
+          data.labels.push(today);
+          data.datasets.push(e);
+        });
+      }
     });
     return data;
   }

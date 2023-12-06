@@ -122,6 +122,14 @@ export class ConsistencyService extends TrendService {
           : details.protein;
       }
     });
+    //Push last day to DB
+    data.labels.push(startDate);
+    data.datasets.push({
+      activity: totalActivities,
+      nutrient: totalNutrients,
+    });
+
+    console.log(data);
     return data;
   }
 }
