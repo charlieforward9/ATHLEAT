@@ -1,94 +1,5 @@
 "use client";
 
-// import { Knewave } from "next/font/google";
-// const knewave = Knewave({ weight: "400", subsets: ["latin"] });
-
-// import React, { useRef, useEffect, useState } from "react";
-// import Chart, { ChartConfiguration, LinearScale } from 'chart.js/auto';
-// import { Scatter } from 'react-chartjs-2';
-// import FilterPanel from '../../components/FilterPanel';
-// import { TrendController } from "../controller";
-// import { TimingController } from "./controller";
-// import { ActivityFilter, NutrientFilter, ControllerManager } from "../types";
-// import { Filters, ChartData, Trend } from "../types";
-// //import { ChartData } from "../types";
-
-// // const getData = async (controller: TimingController, startDate: string, endDate: string) => {
-
-// //   // else
-// //   //   return {
-// //   //     datasets: [{
-// //   //       data: [{x:20,y:20}, {x:30,y:20}]
-// //   //     }] // Add datasets here
-// //   //   }
-// //   const start = new Date(startDate);
-// //   const end = new Date(endDate)
-// //   const data = (await controller.useTrendManager(start, end));
-// //   return data.chartData.datasets[3];
-// //   //return data;
-// // }
-
-// const TimingPage: React.FC = () => {
-//   //const chartData =
-//   const [dataSet, setDataset] = useState<ChartData<Trend.Timing>>();
-//   const [startDate, setStartDate] = useState<string>('');
-//   const [endDate, setEndDate] = useState<string>('');
-//   const [activityFilter, setActivityFilter] = useState("Calories");
-//   const [nutritionFilter, setNutritionFilter] = useState("Calories");
-//   const trendController: TimingController = new TimingController();
-//   const [controllerManager, setControllerManager] = useState<ControllerManager>();
-
-//   Chart.register(LinearScale);
-
-//   const handleDateRangeChange = (startDate: string, endDate: string) => {
-//     setStartDate(startDate);
-//     setEndDate(endDate);
-//   };
-
-//   useEffect (() => {
-//     const start = new Date(startDate);
-//     const end = new Date(endDate)
-//     const func = async () => {
-//       setControllerManager(await trendController.useTrendManager(start, end));
-//       //return manager;
-//     }
-//     //const manager = await func();
-//     if (controllerManager)
-//       setDataset(controllerManager.chartData.datasets[0])
-//   }, [startDate, endDate])
-
-//   const handleFilterChange = (filter: string, activity: boolean) => {
-//     if (activity) {
-//       if (filter == "Calories")
-//         trendController.toggleFilterSelection("Activity", ActivityFilter.Calories);
-//       else if (filter == "Duration")
-//         trendController.toggleFilterSelection("Activity", ActivityFilter.Duration);
-//       else if (filter == "Distance")
-//         trendController.toggleFilterSelection("Activity", ActivityFilter.Distance);
-//       else
-//         trendController.toggleFilterSelection("Activity", ActivityFilter.Pace);
-
-//       setActivityFilter(filter);
-//     }
-
-//     else {
-//       if (filter == "Calories")
-//         trendController.toggleFilterSelection("Nutrient", NutrientFilter.Calories);
-//       else if (filter == "Carbs")
-//         trendController.toggleFilterSelection("Nutrient", NutrientFilter.Carbs);
-//       else if (filter == "Fat")
-//         trendController.toggleFilterSelection("Nutrient", NutrientFilter.Fat);
-//       else
-//         trendController.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
-//       // else if (filter == "Pace")
-//       //   trendController.toggleFilterSelection("Nutrient", NutrientFilter.Protein);
-
-//       setNutritionFilter(filter);
-//     }
-
-//     // toggle the selected filter on the trendController
-//     //trendController.toggleFilterSelection("Activity", trendController.filters.Activity.Calories)
-//   }
 
 //   return (
 //     <main className="flex flex-col min-h-screen">
@@ -143,9 +54,7 @@
 //     </main>
 //   );
 
-// };
 
-// export default TimingPage;
 
 
 
@@ -208,20 +117,6 @@ const TimingPage: React.FC = () => {
 
       const manager = await controller.useTrendManager(start, end);
 
-      // setActivityFilter(
-      //   Object.values(manager.filters.Activity).find(
-      //     (filter) => filter.selected
-      //   )
-      // );
-
-      //console.log(activityFilter);
-
-      // setNutritionFilter(
-      //   Object.values(manager.filters.Nutrient).find(
-      //     (filter) => filter.selected
-      //   )
-      // );
-
       if (activityFilter === undefined) {
         //console.log("here");
         //throw new Error("No activity filter selected");
@@ -234,9 +129,6 @@ const TimingPage: React.FC = () => {
           //console.log(i);
           if (dataset.type === "Activity") {
             if (manager.filters.Activity.Calories) {
-              // console.log(manager.chartData.labels[i]);
-              // const date = new Date(manager.chartData.labels[i]);
-              // const minutes = date.getMinutes();
               const minutes = timeStringToMinutes(manager.chartData.labels[i]);
               const point: Point = {
                 x: minutes,
@@ -253,7 +145,7 @@ const TimingPage: React.FC = () => {
                 x: minutes,
                 y: dataset.caloricVolume,
               } as Point;
-              //console.log(dataset.caloricVolume);
+              
               nutrientDataToGoToChart.push(point);
             }
 
