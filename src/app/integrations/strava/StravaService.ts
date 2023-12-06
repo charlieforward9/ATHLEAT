@@ -46,7 +46,6 @@ export class StravaService extends IntegrationService {
       },
     });
     const response = await restOperation.response;
-    console.log(response);
     if (response.statusCode === 200) {
       return response.body;
     } else {

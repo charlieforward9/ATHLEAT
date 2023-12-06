@@ -84,7 +84,6 @@ const FilterPanel: React.FC<PanelProps> = (props) => {
         
         // Set the initial end date to today
         const today = new Date();
-        //console.log(today);
         setEndDate(today.toISOString().split('T')[0]);
     
         // Call the onDateRangeChange callback with initial values

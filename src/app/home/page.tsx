@@ -15,15 +15,12 @@ const HomePage: React.FC = () => {
   async function handleSync() {
     try {
       const id = localStorage.getItem("currentUserID");
-      console.log(id);
       if (id != null) {
         const dataBody: FetchBody = {
           id: id,
         };
         const service = new StravaService();
-        console.log("fetching");
         const response = await service.fetch(dataBody);
-        console.log("Done");
       } else {
         throw new Error("No user id or code");
       }
