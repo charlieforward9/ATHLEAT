@@ -16,31 +16,37 @@ export class TimingService extends TrendService {
     if (!userID) {
       throw new Error("No user logged in");
     }
-    const query = await this.client.graphql({
-      query: eventsByUserID,
-      variables: {
-        userID: userID,
-        filter: {
-          date: {
-            between: [startDate.toISOString(), endDate.toISOString()],
+    let nextToken: string | null | undefined = null;
+    let combinedItems: APIResponseEvent[] = [];
+    do {
+      const query = await this.client.graphql({
+        query: eventsByUserID,
+        variables: {
+          userID: userID,
+          filter: {
+            date: {
+              between: [startDate.toISOString(), endDate.toISOString()],
+            },
+            or: [
+              {
+                type: {
+                  eq: "Activity",
+                },
+              },
+              {
+                type: {
+                  eq: "Nutrient",
+                },
+              },
+            ],
           },
-          or: [
-            {
-              type: {
-                eq: "Activity",
-              },
-            },
-            {
-              type: {
-                eq: "Nutrient",
-              },
-            },
-          ],
         },
-      },
-    });
+      });
+      nextToken = query.data.eventsByUserID.nextToken;
+      combinedItems = combinedItems.concat(query.data.eventsByUserID.items);
+    } while (nextToken);
 
-    return query.data.eventsByUserID.items;
+    return combinedItems;
   }
 
   transformData(events: APIResponseEvent[]): ChartData<Trend.Timing> {
@@ -49,14 +55,16 @@ export class TimingService extends TrendService {
       labels: [],
       datasets: [],
     };
-    events.map((e) => {
-      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
-      data.labels.push(e.time);
-      data.datasets.push({
-        type: e.type,
-        caloricVolume: eventDetails.calories,
+    events
+      .sort((a, b) => (a.date < b.date ? -1 : 1))
+      .forEach((e) => {
+        let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+        data.labels.push(e.time);
+        data.datasets.push({
+          type: e.type,
+          caloricVolume: eventDetails.calories,
+        });
       });
-    });
     return data;
   }
 }
