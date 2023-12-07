@@ -1,64 +1,55 @@
 "use client";
 import { ChatgptService } from "@/app/integrations/openai/ChatgptService";
-import { NutritionBody } from "@/app/integrations/types";
 import { generateClient } from "aws-amplify/api";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
+import { Knewave } from "next/font/google";
+
+const knewave = Knewave({ weight: "400", subsets: ["latin"] });
 
 function NutritionForm() {
-  // State to keep track of the input values
-  const [formData, setFormData] = useState<NutritionBody>({
-    user_id: "",
-    meal_date: "",
-    meal_time: "",
-    food: "",
-  });
-  const client = generateClient();
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [food, setFood] = useState("");
 
-  // Handler for input value changes
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+  const client = generateClient();
 
   // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     const currentUserID = localStorage.getItem("currentUserID");
     e.preventDefault();
     if (!currentUserID) {
-      console.log("No user id");
+      throw new Error("No user id");
     } else {
       const service = new ChatgptService();
-      service.fetch(formData);
+      service.fetch({
+        user_id: currentUserID,
+        meal_date: date,
+        meal_time: time,
+        food: food,
+      });
+
+      alert("Nutrition event submitted!");
 
       // Clear the form
-      setFormData({
-        user_id: currentUserID ?? "",
-        meal_date: "",
-        meal_time: "",
-        food: "",
-      });
+      setDate("");
+      setTime("");
+      setFood("");
     }
   };
 
   const setDateTimeToNow = () => {
     const now = new Date();
-    const meal_date = now.toISOString().split("T")[0];
-    const meal_time = now.toTimeString().split(" ")[0];
-    setFormData((prevState) => ({
-      ...prevState,
-      meal_date,
-      meal_time,
-    }));
+    const date = now.toISOString().split("T")[0];
+    const time = now.toTimeString().split(" ")[0];
+    setDate(date);
+    setTime(time);
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <div className="flex flex-col w-full max-w-md bg-white rounded-lg shadow-md p-6 items-center">
         <h1 className="text-2xl font-semibold mb-4 text-center">
-          Nutrition Form
+          <div className={knewave.className}>Nutrition Form</div>
         </h1>
         <div className="flex items-center justify-between">
           <button
@@ -80,8 +71,8 @@ function NutritionForm() {
             <input
               type="date"
               name="date"
-              value={formData.meal_date}
-              onChange={handleChange}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -93,8 +84,8 @@ function NutritionForm() {
             <input
               type="time"
               name="time"
-              value={formData.meal_time}
-              onChange={handleChange}
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               step="1"
@@ -107,8 +98,8 @@ function NutritionForm() {
             <input
               type="text"
               name="food"
-              value={formData.food}
-              onChange={handleChange}
+              value={food}
+              onChange={(e) => setFood(e.target.value)}
               required
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />

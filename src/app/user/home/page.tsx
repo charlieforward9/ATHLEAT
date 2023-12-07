@@ -83,30 +83,17 @@ const HomePage: React.FC = () => {
 
       {/* Main content split into two halves */}
       <div className="w-4/5 flex flex-col items-center">
-        <div className=" flex justify-between">
-          <div className="w-1/2 p-4">
+        <div className="flex justify-between">
+          <div className="w-full p-4">
             <button
-              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full"
+              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full   hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 hover:text-blue-600"
               onClick={() => {
                 router.push("/user/timeline");
               }}
             >
-              <div>Timeline</div>
+              <div className={knewave.className}>Timeline</div>
               <div className="text-lg text-gray-500">
                 See the combined timeline of your fitness and nutrition habits
-              </div>
-            </button>
-          </div>
-          <div className="w-1/2 p-4">
-            <button
-              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black h-full w-full"
-              onClick={() => {
-                router.push("/user/coach");
-              }}
-            >
-              <div>Coach</div>
-              <div className="text-lg text-gray-500">
-                Get coached on your data
               </div>
             </button>
           </div>
@@ -116,16 +103,16 @@ const HomePage: React.FC = () => {
         <div className="text-xl items-center font-bold">Trends</div>
 
         <div className="text-xl items-center font-bold"></div>
-        <div className="w-full center flex justify-between mt-8">
+        <div className="w-full flex justify-between items-stretch mt-8 ">
           <div className="w-1/4 p-4">
             <button
-              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              className="h-full justify-between flex flex-col bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black   hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 hover:text-blue-600"
               onClick={() => {
                 router.push("/user/trends/consistency");
               }}
             >
-              <div>Consistency Across Activities</div>
-              <div className="text-lg text-gray-500">
+              <div className={knewave.className}>Event Consistency</div>
+              <div className="pt-10 text-lg text-gray-500">
                 Explore how your workout patterns align with your dietary logs.
                 Do you see trends in both your physical activities and eating
                 habits?
@@ -134,28 +121,27 @@ const HomePage: React.FC = () => {
           </div>
           <div className="w-1/4 p-4">
             <button
-              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              className="h-full justify-between flex flex-col bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black   hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 hover:text-blue-600"
               onClick={() => {
                 router.push("/user/trends/intake");
               }}
             >
-              <div>Activity and Calorie Intake Analysis</div>
-              <div className="text-lg text-gray-500">
-                Examine how your daily exercises might influence your caloric
-                consumption. Is there a correlation between more active days and
-                increased intake?
+              <div className={knewave.className}>Intake Analysis</div>
+              <div className="pt-10 text-lg text-gray-500">
+                Examine how your exercises influence your consumption. Is there
+                a correlation between more active days and increased intake?
               </div>
             </button>
           </div>
           <div className="w-1/4 p-4">
             <button
-              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              className="h-full justify-between flex flex-col bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black   hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 hover:text-blue-600"
               onClick={() => {
                 router.push("/user/trends/timing");
               }}
             >
-              <div>Exercise vs. Meal Times</div>
-              <div className="text-lg text-gray-500">
+              <div className={knewave.className}>Exercise vs. Meal Times</div>
+              <div className="pt-10 text-lg text-gray-500">
                 Understand when users tend to exercise (morning, afternoon,
                 evening) and when they consume most of their calories.
               </div>
@@ -163,13 +149,13 @@ const HomePage: React.FC = () => {
           </div>
           <div className="w-1/4 p-4">
             <button
-              className="bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black"
+              className="h-full justify-between flex flex-col bg-white text-2xl font-bold text-gray-800 p-6 rounded-lg border border-black   hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30 hover:text-blue-600"
               onClick={() => {
                 router.push("/user/trends/effort");
               }}
             >
-              <div>Big Effort Analysis</div>
-              <div className="text-lg text-gray-500">
+              <div className={knewave.className}>Big Effort Analysis</div>
+              <div className="pt-10 text-lg text-gray-500">
                 Explore how your workout patterns align with your dietary logs.
                 Do you see trends in both your physical activities and eating
                 habits?
