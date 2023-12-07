@@ -124,6 +124,7 @@ const TimingPage: React.FC = () => {
         //console.log("here2");
         const activityDataToGoToChart: Point[] = []; //These should be different colors for each dataset
         const nutrientDataToGoToChart: Point[] = [];
+        const labels: string[] = []
 
         manager.chartData.datasets.map((dataset, i) => {
           //console.log(i);
@@ -151,9 +152,11 @@ const TimingPage: React.FC = () => {
 
             //Add additional filter cases here
           }
+          labels.push(manager.chartData.labels[i]);
         });
 
         const combinedDataset = {
+          //labels: labels,
           datasets: [
             {
               label: "Activity",
@@ -200,6 +203,27 @@ const TimingPage: React.FC = () => {
                     text: activityFilter,
                     font: {
                       size: 15,
+                    },
+                  },
+                },
+                x: {
+                  type: 'linear',
+                  title: {
+                    display: true,
+                    text: "Time of Day",
+                    font: {
+                      size: 15,
+                    },
+                  },
+                  ticks: {
+                    callback: (value, index, values) => {
+                      // Use this callback to customize the displayed labels on the x-axis
+                      // For example, you can convert minutes to HH:mm format
+                      const hours = Math.floor(value as number / 60);
+                      const minutes = value as number % 60;
+                      const ampm = hours >= 12 ? 'PM' : 'AM';
+                      const formattedHours = hours % 12 || 12;
+                      return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
                     },
                   },
                 },

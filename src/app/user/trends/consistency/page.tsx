@@ -183,8 +183,8 @@ const ConsistencyPage: React.FC = () => {
                   text: "Activity: " + activityFilter,
                   font: {
                     size: 15
-                    }
                   }
+                }
               },
               y1: {
                 type: 'linear',
