@@ -134,13 +134,15 @@ const ConsistencyPage: React.FC = () => {
               data: activityDataset,
               yAxisID: 'y',
               borderColor: "#FF6384",
-              label: "Activity"
+              label: "Activity",
+              tension: 0.25
             },
             {
               data: nutrientDataset,
               yAxisID: 'y1',
               borderColor: "#36A2EB",
-              label: "Nutrition"
+              label: "Nutrition",
+              tension: 0.25
             }
           ]
         }
