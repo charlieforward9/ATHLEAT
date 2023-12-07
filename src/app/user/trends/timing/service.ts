@@ -4,6 +4,7 @@ import { eventsByUserID } from "@/graphql/queries";
 import { TrendService } from "../service";
 import { ChartData, Trend } from "../types";
 import { EventsByUserIDQueryVariables } from "@/API";
+import { safelyParseJSON } from "@/utils/parser";
 
 export class TimingService extends TrendService {
   private client: V6Client<never>;
@@ -61,7 +62,7 @@ export class TimingService extends TrendService {
     events
       .sort((a, b) => (a.date < b.date ? -1 : 1))
       .forEach((e) => {
-        let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+        let eventDetails = safelyParseJSON(e.eventJSON!);
         data.labels.push(e.time);
         data.datasets.push({
           type: e.type,

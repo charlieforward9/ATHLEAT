@@ -4,6 +4,7 @@ import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 import { eventsByUserID } from "@/graphql/queries";
 import { APIResponseEvent } from "@/app/types";
 import { EventsByUserIDQueryVariables } from "@/API";
+import { safelyParseJSON } from "@/utils/parser";
 
 export class ConsistencyService extends TrendService {
   private client: V6Client<never>;
@@ -73,7 +74,7 @@ export class ConsistencyService extends TrendService {
       isSameDay = true;
 
     sortedEvents.forEach((e) => {
-      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+      let eventDetails = safelyParseJSON(e.eventJSON!);
 
       isSameDay = e.date == startDate;
       if (!isSameDay) {
