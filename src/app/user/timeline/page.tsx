@@ -38,16 +38,24 @@ const TimelinePage: React.FC = () => {
       const activityDataset: Point[] = [];
       const nutrientDataset: Point[] = [];
       const labels: string[] = [];
+      let duration = 10;
 
       manager.events.forEach((e) => {
         const mins = timeStringToMinutes(e.details.time);
         const point: Point = {
           x: mins,
-          y: e.details.calories,
+          y: e.details.calories
         } as Point;
-        if (e.type === "Activity") activityDataset.push(e.details.calories);
-        else if (e.type === "Nutrient") nutrientDataset.push(e.details.calories);
-        labels.push(e.details.time);
+        if (e.type === "Activity") {
+          activityDataset.push(point);
+          duration = e.details.duration;
+          //labels.push(`Date: ${e.details.date}, Time: ${e.details.time}, Activity Type: ${e.details.activityType}, Duration: ${e.details.duration}, Calories: ${e.details.calories}, Distance: ${e.details.distance}, Pace: ${e.details.pace}`);
+          labels.push("Duration: " + duration + "min");
+        } 
+        else if (e.type === "Nutrient") {
+          nutrientDataset.push(point);
+          labels.push("Duration: 20min");
+        }
       })
 
       const combinedDataset = {
@@ -57,11 +65,13 @@ const TimelinePage: React.FC = () => {
             label: "Activity",
             data: activityDataset,
             backgroundColor: "#FF6384",
+            barThickness: duration
           },
           {
             label: "Nutrition",
             data: nutrientDataset,
             backgroundColor: "#36A2EB",
+            barThickness: 20
           }
         ]
       }
@@ -89,7 +99,7 @@ const TimelinePage: React.FC = () => {
       </div>
       {/* Main Content */}
       <div className="flex-1 p-8 flex" >
-        <div className="flex-1 max-h-85" >
+        <div className="flex-1" style={{maxHeight: "85%", display: "flex", justifyContent: "center"}}>
           <Bar
             data={combinedData}
             options={{
@@ -107,12 +117,34 @@ const TimelinePage: React.FC = () => {
                       size: 15,
                     },
                   },
+                  grid: {
+                    display: false, // Remove y-axis grid lines
+                  },
                 },
                 x: {
-                  labels: [
-                    "12:00AM", "12:00PM", "12:00AM"
-                  ]
-                }
+                  type: 'linear',
+                  title: {
+                    display: true,
+                    text: "Time of Day",
+                    font: {
+                      size: 15,
+                    },
+                  },
+                  grid: {
+                    display: false, // Remove x-axis grid lines
+                  },
+                  ticks: {
+                    callback: (value, index, values) => {
+                      // Use this callback to customize the displayed labels on the x-axis
+                      // For example, you can convert minutes to HH:mm format
+                      const hours = Math.floor(value as number / 60);
+                      const minutes = value as number % 60;
+                      const ampm = hours >= 12 ? 'PM' : 'AM';
+                      const formattedHours = hours % 12 || 12;
+                      return `${formattedHours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+                    },
+                  },
+                },
               },
               // responsive: true, // Enable responsiveness
               // maintainAspectRatio: false, // Disable maintaining aspect ratio
