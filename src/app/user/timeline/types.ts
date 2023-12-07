@@ -1,4 +1,8 @@
-import { ActivityEventJson, MoodEventJson, NutrientEventJson } from "../types";
+import {
+  ActivityEventJson,
+  MoodEventJson,
+  NutrientEventJson,
+} from "@/app/types";
 
 export type TimelineEventColors = {
   Activity: "#FF6384";

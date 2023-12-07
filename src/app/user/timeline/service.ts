@@ -8,6 +8,7 @@ import {
 } from "@/app/types";
 import { EventsByUserIDQueryVariables } from "@/API";
 import { TimelineData, TimelineEvent } from "./types";
+import { safelyParseJSON } from "@/utils/parser";
 
 export class TimelineService {
   private client: V6Client<never>;
@@ -49,7 +50,7 @@ export class TimelineService {
       isSameDay = true;
 
     sortedEvents.forEach((e) => {
-      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+      let eventDetails = safelyParseJSON(e.eventJSON!);
       if (e.type == "Activity") {
         const details = eventDetails as ActivityEventJson;
         const activityEvent: TimelineEvent<"Activity"> = {

@@ -14,6 +14,7 @@ function SignIn() {
     const password = formData.get("password")?.toString() ?? "";
 
     try {
+      localStorage.removeItem("currentUserID");
       await signOut();
       const auth = await signIn({
         username: email,

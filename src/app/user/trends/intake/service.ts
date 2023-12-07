@@ -4,6 +4,7 @@ import { ActivityData, ChartData, NutrientData, Trend } from "../types";
 import { APIResponseEvent } from "@/app/types";
 import { eventsByUserID } from "@/graphql/queries";
 import { EventsByUserIDQueryVariables } from "@/API";
+import { safelyParseJSON } from "@/utils/parser";
 
 export class IntakeService extends TrendService {
   private client: V6Client<never>;
@@ -71,7 +72,7 @@ export class IntakeService extends TrendService {
       },
       startDate = sortedEvents.length ? sortedEvents[0].date : "2023-11-01";
     sortedEvents.forEach((e) => {
-      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+      let eventDetails = safelyParseJSON(e.eventJSON!);
 
       //Get the date of the event
       //If it matches the current date, add it to the current dataset

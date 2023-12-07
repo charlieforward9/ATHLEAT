@@ -11,6 +11,7 @@ import {
   Trend,
 } from "../types";
 import { EventsByUserIDQueryVariables } from "@/API";
+import { safelyParseJSON } from "@/utils/parser";
 
 export class IntakeService extends TrendService {
   private client: V6Client<never>;
@@ -61,7 +62,7 @@ export class IntakeService extends TrendService {
       mood: MoodData[] = [],
       tempDataset: EffortData[] | undefined;
     sortedEvents.forEach((e) => {
-      let eventDetails = JSON.parse(JSON.parse(e.eventJSON!));
+      let eventDetails = safelyParseJSON(e.eventJSON!);
       let isSameDay = e.date == today;
       if (!isSameDay) {
         if (tempDataset) {

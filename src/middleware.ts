@@ -21,22 +21,16 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  if (authenticated) {
+  if (authenticated || request.nextUrl.pathname === "/") {
     return response;
   }
 
-  return NextResponse.redirect(new URL("/auth", request.url));
+  return NextResponse.redirect(new URL("/auth/sign-in", request.url));
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|auth).*)",
+    // Match any path except the specified ones
+    "/((?!/|api|_next/static|_next/image|favicon.ico|auth).*)",
   ],
 };
