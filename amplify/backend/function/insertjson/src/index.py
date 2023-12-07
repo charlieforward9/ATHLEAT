@@ -1,6 +1,5 @@
 import json
 import os
-import openai
 import datetime
 import urllib3
 import boto3
@@ -20,8 +19,6 @@ def handler(event, context):
 
     # User ID from the event
     user_id = str(body['user_id'])
-    meal_date = body['meal_date']
-    meal_time = body['meal_time']
 
     # Query the User table for the specific user
     try:
@@ -50,38 +47,22 @@ def handler(event, context):
         }
 
     #retrieve user's food description
-    food_desc = str(body['food'])
+    event_type = str(body['event_type'])
+    event_json = body['event_json']
 
-    #instantiate message chain with system prompt and user's description inserted
-    messages = [
-        {
-        "role": "system",
-        "content": """Estimate the calories and macronutrients for the described food(s)/meals/snack. Return your answer in json structure of the format: 
-        {"calories": x, "protein": x, "fat": x, "carbs": x}
-        Return ONLY 1 json object. Make the values as accurate as possible based on your knowledge of the foods described and typical portion sizes. Units should be grams for the macronutrients and Calories for the calories."""
-        },
-        {
-        "role": "user",
-        "content": food_desc
-        }]
 
-    #make call to OpenAI for chat completion
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
-        messages=messages,
-        temperature=0,
-        response_format ={ "type": "json_object" }
-        )
-    #parse response into json obj
-    json_parsed = json.loads(response.choices[0].message.content)
+
+
+
+
     current_time_iso = datetime.datetime.utcnow().isoformat() + 'Z'
 
     event_item = {
         'id': str(uuid.uuid4()),
-        'type': 'Nutrient',
-        'eventJSON': json.dumps(json_parsed),
-        'date': meal_date,
-        'time': meal_time,
+        'type': event_type,
+        'eventJSON': json.dumps(event_json),
+        'date': str(body['event_json']['date']),
+        'time': str(body['event_json']['time']),
         'createdAt': current_time_iso,
         'updatedAt': current_time_iso,
         'userID': user_id,
@@ -96,7 +77,6 @@ def handler(event, context):
         # handle exception
         print(f"Error adding event to DynamoDB: {e.response['Error']['Message']}")
 
-    # TODO implement
     return {
         'statusCode': 200,
         'headers': {

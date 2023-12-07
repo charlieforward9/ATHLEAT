@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/insertjson": {
+      "name": "/insertjson",
+      "lambdaFunction": "insertjson",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
