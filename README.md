@@ -1,4 +1,7 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## ATHLEAT
+
+* [Final Presentation](https://www.youtube.com/watch?v=kohhrJV1l6A)
+* [Initial Vision](https://youtu.be/kohhrJV1l6A)
 
 ## Getting Started
 
@@ -16,7 +19,3 @@ bun dev
 
 Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
 
-## Resources
-
-* [Final Presentation](https://www.youtube.com/watch?v=kohhrJV1l6A)
-* [Initial Vision](https://youtu.be/kohhrJV1l6A)
