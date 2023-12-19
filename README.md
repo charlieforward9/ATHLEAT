@@ -3,6 +3,12 @@
 * [Final Presentation](https://www.youtube.com/watch?v=kohhrJV1l6A)
 * [Initial Vision](https://youtu.be/kohhrJV1l6A)
 
+## Architecture
+
+![Athleat Architecture](architecture.png)
+
+_Note: The web hosting via S3 and Cloudfront is not live, project can only be launched locally via the following steps..._
+
 ## Getting Started
 
 First, run the development server:
